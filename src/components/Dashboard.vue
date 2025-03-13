@@ -85,11 +85,13 @@ export default {
   <div class="dashboard">
     <!-- Header -->
     <div class="header">
-      <h1>Luzern</h1>
-      <p>{{ formattedTime }}</p>
-      <button @click="toggleTheme">Toggle Dark/Light Mode</button>
+      <img src="/logo.png" alt="Dashboard Logo" class="logo" />
+      <div class="header-center">
+        <h1>Luzern</h1>
+        <p>{{ formattedTime }}</p>
+      </div>
+      <button @click="toggleTheme">Dark/Light</button>
     </div>
-
     <!-- Luftqualitäts-Infos -->
     <div class="info-box">
       <div>
@@ -138,6 +140,11 @@ export default {
   height: 40px;
   margin-right: 10px;
   vertical-align: middle;
+}
+
+.logo {
+  height: 50px;
+  width: auto;
 }
 
 .dashboard {
@@ -193,29 +200,41 @@ body.light {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Header-Stile */
 .header {
-  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 15px 20px;
   background-color: #333;
-  color: #fff;
+  color: white;
   position: fixed;
   top: 0;
-  left: 0; /* Stellt sicher, dass der Header auch links beginnt */
+  left: 0;
   width: 100%;
   z-index: 1000;
-  box-sizing: border-box; /* Wichtig, um die Breite korrekt zu berechnen */
+  box-sizing: border-box;
 }
 
+.header-center {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  flex-grow: 1;
+}
+
+
 .header h1 {
-  font-size: 2rem;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.header p {
+  font-size: 1rem;
   margin: 0;
 }
 
 button {
-  padding: 10px;
+  padding: 10px 15px;
   background-color: #4caf50;
   border: none;
   color: white;
@@ -289,16 +308,25 @@ button:hover {
   }
 
   .header {
-    flex-direction: column;
-    text-align: center;
+    flex-direction: row;
+    padding: 10px;
+  }
+
+  .logo {
+    height: 40px;
   }
 
   .header h1 {
     font-size: 1.5rem;
   }
 
+  .header p {
+    font-size: 0.9rem;
+  }
+
   button {
-    margin-top: 10px;
+    font-size: 0.9rem;
+    padding: 8px 12px;
   }
 }
 </style>
