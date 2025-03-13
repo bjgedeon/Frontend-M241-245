@@ -59,9 +59,12 @@ export default {
     };
 
     onMounted(() => {
-      document.body.classList.add("dark"); // Default theme is dark
+      document.body.classList.add("light");
       getData();
-      setInterval(getData, 5000);
+      setInterval(() => {
+        formattedTime.value = new Date().toLocaleTimeString(); // Uhrzeit wird alle 1 Sekunde aktualisiert
+        getData();
+      }, 1000);
     });
 
     return {
