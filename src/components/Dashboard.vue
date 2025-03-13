@@ -1,40 +1,3 @@
-<template>
-  <div class="dashboard">
-    <!-- Header -->
-    <div class="header">
-      <h1>Luzern</h1>
-      <p>{{ formattedTime }}</p>
-      <!-- Dark/Light Mode Toggle Button -->
-      <button @click="toggleTheme">Toggle Dark/Light Mode</button>
-    </div>
-
-    <!-- Luftqualitäts-Infos -->
-    <div class="info-box">
-      <div>
-        <p>🌡️ Temperatur: {{ latestData.temperature }}°C</p>
-        <p>💧 Luftfeuchtigkeit: {{ latestData.humidity }}%</p>
-      </div>
-      <div>
-        <p>📏 Luftdruck: {{ latestData.pressure }} hPa</p>
-        <p>🌬️ Luftqualität: {{ latestData.airQuality }}</p>
-      </div>
-    </div>
-
-    <!-- Diagramme -->
-    <div class="charts">
-      <div class="chart">
-        <TemperatureChart :data="temperatureData" />
-      </div>
-      <div class="chart">
-        <HumidityChart :data="humidityData" />
-      </div>
-      <div class="chart">
-        <AirQualityChart :data="airQualityData" />
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
 import { ref, onMounted } from "vue";
 import { fetchData } from "../api.js";
@@ -52,14 +15,19 @@ export default {
     const airQualityData = ref([]);
     const latestData = ref({});
     const formattedTime = ref(new Date().toLocaleTimeString());
+    const currentTheme = ref("dark"); // Store current theme (dark or light)
 
     const toggleTheme = () => {
-      const currentTheme = document.body.classList.contains("dark")
-        ? "dark"
-        : "light";
-      document.body.classList.remove(currentTheme);
-      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      // Toggle between dark and light modes
+      currentTheme.value = currentTheme.value === "dark" ? "light" : "dark";
+      const newTheme = currentTheme.value;
+      document.body.classList.remove("dark", "light");
       document.body.classList.add(newTheme);
+    };
+
+    const getIcon = (type) => {
+      // Dynamically return the correct icon based on the theme
+      return `/images/${type}-${currentTheme.value}mode.png`;
     };
 
     const getData = async () => {
@@ -91,12 +59,9 @@ export default {
     };
 
     onMounted(() => {
-      document.body.classList.add("light");
+      document.body.classList.add("dark"); // Default theme is dark
       getData();
-      setInterval(() => {
-        formattedTime.value = new Date().toLocaleTimeString();
-        getData();
-      }, 1000);
+      setInterval(getData, 5000);
     });
 
     return {
@@ -107,12 +72,75 @@ export default {
       pressureData,
       airQualityData,
       toggleTheme,
+      getIcon, // Provide the method for icon switching
     };
   },
 };
 </script>
 
+<template>
+  <div class="dashboard">
+    <!-- Header -->
+    <div class="header">
+      <h1>Luzern</h1>
+      <p>{{ formattedTime }}</p>
+      <button @click="toggleTheme">Toggle Dark/Light Mode</button>
+    </div>
+
+    <!-- Luftqualitäts-Infos -->
+    <div class="info-box">
+      <div>
+        <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
+        <p>Temperatur: {{ latestData.temperature }}°C</p>
+      </div>
+      <div>
+        <img
+          :src="getIcon('luftfeuchtigkeit')"
+          alt="Luftfeuchtigkeit"
+          class="info-icon"
+        />
+        <p>Luftfeuchtigkeit: {{ latestData.humidity }}%</p>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div>
+        <img :src="getIcon('luftdruck')" alt="Luftdruck" class="info-icon" />
+        <p>Luftdruck: {{ latestData.pressure }} hPa</p>
+      </div>
+      <div>
+        <img
+          :src="getIcon('luftqualitaet')"
+          alt="Luftqualität"
+          class="info-icon"
+        />
+        <p>Luftqualität: {{ latestData.airQuality }}</p>
+      </div>
+    </div>
+
+    <!-- Diagramme -->
+    <div class="charts">
+      <div class="chart">
+        <TemperatureChart :data="temperatureData" />
+      </div>
+      <div class="chart">
+        <HumidityChart :data="humidityData" />
+      </div>
+      <div class="chart">
+        <AirQualityChart :data="airQualityData" />
+      </div>
+    </div>
+  </div>
+</template>
+
 <style>
+.info-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
 .dashboard {
   margin: 0;
   padding: 0;
@@ -218,11 +246,13 @@ button:hover {
 }
 
 .info-box div {
+  display: flex;
+  align-items: center;  /* Ensure that the icon and text align properly */
   width: 48%; /* Ensure space between columns */
 }
 
 .info-box p {
-  margin: 5px 0;
+  margin: 0; /* Remove margin from paragraph */
 }
 
 /* Diagramme */
