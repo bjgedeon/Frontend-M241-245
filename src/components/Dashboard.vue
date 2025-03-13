@@ -59,7 +59,7 @@ export default {
     };
 
     onMounted(() => {
-      document.body.classList.add("light");
+      document.body.classList.add("dark");
       getData();
       setInterval(() => {
         formattedTime.value = new Date().toLocaleTimeString(); // Uhrzeit wird alle 1 Sekunde aktualisiert
@@ -112,11 +112,7 @@ export default {
         <p>Luftdruck: {{ latestData.pressure }} hPa</p>
       </div>
       <div>
-        <img
-          :src="getIcon('luftqualitaet')"
-          alt="Luftqualität"
-          class="info-icon"
-        />
+        <img :src="getIcon('luftqualitaet')" alt="Luftqualität" class="info-icon" />
         <p>Luftqualität: {{ latestData.airQuality }}</p>
       </div>
     </div>
