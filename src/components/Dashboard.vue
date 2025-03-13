@@ -91,9 +91,12 @@ export default {
     };
 
     onMounted(() => {
-      document.body.classList.add("dark"); // Standardmäßig Dark Mode setzen
+      document.body.classList.add("light");
       getData();
-      setInterval(getData, 5000);
+      setInterval(() => {
+        formattedTime.value = new Date().toLocaleTimeString();
+        getData();
+      }, 1000);
     });
 
     return {
@@ -133,7 +136,6 @@ export default {
 .dark .chart {
   background-color: #2c2c2c;
 }
-
 
 /* Global Styles */
 body.dark {
