@@ -1,12 +1,26 @@
 <template>
-  <Dashboard />
+  <div>
+    <Login v-if="!isLoggedIn" @login-success="handleLoginSuccess" />
+    <Dashboard v-else />
+  </div>
 </template>
 
 <script>
+import Login from './components/Login.vue';
 import Dashboard from './components/Dashboard.vue';
 
 export default {
-  components: { Dashboard },
+  components: { Login, Dashboard },
+  data() {
+    return {
+      isLoggedIn: false,
+    };
+  },
+  methods: {
+    handleLoginSuccess() {
+      this.isLoggedIn = true;
+    },
+  },
 };
 </script>
 
