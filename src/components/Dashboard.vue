@@ -1,6 +1,6 @@
 <script>
 import { ref, onMounted } from "vue";
-import { fetchData } from "../api.js";
+import { fetchData } from "../api.js"; // Importiere die Funktion zum Abrufen der Daten
 import TemperatureChart from "./TemperatureChart.vue";
 import HumidityChart from "./HumidityChart.vue";
 import AirQualityChart from "./AirQualityChart.vue";
@@ -27,26 +27,27 @@ export default {
       return `/images/${type}-${isDarkMode.value ? 'dark' : 'light'}mode.png`;
     };
 
+    // Funktion zum Abrufen der Daten
     const getData = async () => {
       try {
-        const data = await fetchData();
-        latestData.value = data;
+        const data = await fetchData(); // Daten aus sensorData.json holen
+        latestData.value = data[data.length - 1]; // Die letzten Daten als latestData speichern
 
         temperatureData.value.push({
           time: formattedTime.value,
-          temperature: data.temperature,
+          temperature: latestData.value.temperature,
         });
         humidityData.value.push({
           time: formattedTime.value,
-          humidity: data.humidity,
+          humidity: latestData.value.humidity,
         });
         pressureData.value.push({
           time: formattedTime.value,
-          pressure: data.pressure,
+          pressure: latestData.value.pressure,
         });
         airQualityData.value.push({
           time: formattedTime.value,
-          airQuality: data.airQuality,
+          airQuality: latestData.value.airQuality,
         });
 
         formattedTime.value = new Date().toLocaleTimeString();

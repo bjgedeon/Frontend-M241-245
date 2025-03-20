@@ -1,11 +1,14 @@
-export const fetchData = async () => {
-    try {
-      const response = await fetch('https://example.com/api/data');
-      if (!response.ok) throw new Error('Fehler beim Abrufen der Daten');
-      return await response.json();
-    } catch (error) {
-      console.error('API-Fehler:', error);
-      throw error;
+// src/api.js
+export async function fetchData() {
+  try {
+    const response = await fetch('/sensorData.json'); // Lade die JSON-Datei aus dem public-Ordner
+    if (!response.ok) {
+      throw new Error('Netzwerkantwort war nicht ok');
     }
-  };
-  
+    const data = await response.json(); // Parsen der JSON-Daten
+    return data;
+  } catch (error) {
+    console.error('Fehler beim Laden der Daten:', error);
+    return {};
+  }
+}
