@@ -1,9 +1,9 @@
 <script>
 import { ref, onMounted } from "vue";
 import { fetchData } from "../api.js"; // Importiere die Funktion zum Abrufen der Daten
-import TemperatureChart from "./TemperatureChart.vue";
-import HumidityChart from "./HumidityChart.vue";
-import AirQualityChart from "./AirQualityChart.vue";
+import TemperatureChart from "./Charts/TemperatureChart.vue";
+import HumidityChart from "./Charts/HumidityChart.vue";
+import AirQualityChart from "./Charts/AirQualityChart.vue";
 
 export default {
   components: { TemperatureChart, HumidityChart, AirQualityChart },
@@ -24,7 +24,7 @@ export default {
     };
 
     const getIcon = (type) => {
-      return `/images/${type}-${isDarkMode.value ? 'dark' : 'light'}mode.png`;
+      return `/images/${type}-${isDarkMode.value ? "dark" : "light"}mode.png`;
     };
 
     // Funktion zum Abrufen der Daten
@@ -56,13 +56,28 @@ export default {
       }
     };
 
+    // Funktion zum Aktualisieren der Charts alle 5 Minuten
+    const updateCharts = () => {
+      // Hier sorgen wir dafür, dass die Diagramme die neuesten Daten erhalten
+      temperatureData.value = [...temperatureData.value]; // Kopieren der Daten für das Diagramm
+      humidityData.value = [...humidityData.value];
+      airQualityData.value = [...airQualityData.value];
+    };
+
     onMounted(() => {
       document.body.classList.add("dark");
       getData();
+
+      // Daten alle 1 Sekunde abrufen (aktuell halten)
       setInterval(() => {
         formattedTime.value = new Date().toLocaleTimeString(); // Uhrzeit wird alle 1 Sekunde aktualisiert
         getData();
       }, 1000);
+
+      // Diagramme nur alle 5 Minuten aktualisieren
+      setInterval(() => {
+        updateCharts();
+      }, 300000); // 5 Minuten Intervall für die Charts
     });
 
     return {
@@ -81,6 +96,7 @@ export default {
 </script>
 
 <template>
+  <br />
   <div class="dashboard">
     <!-- Header -->
     <div class="header">
@@ -120,7 +136,11 @@ export default {
         <p>Luftdruck: {{ latestData.pressure }} hPa</p>
       </div>
       <div>
-        <img :src="getIcon('luftqualitaet')" alt="Luftqualität" class="info-icon" />
+        <img
+          :src="getIcon('luftqualitaet')"
+          alt="Luftqualität"
+          class="info-icon"
+        />
         <p>Luftqualität: {{ latestData.airQuality }}</p>
       </div>
     </div>
@@ -329,44 +349,11 @@ body.light {
   background-color: #333;
   padding: 20px;
   border-radius: 10px;
-  height: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .charts {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .charts {
-    grid-template-columns: 1fr;
-  }
-
-  .info-box {
-    flex-direction: column;
-  }
-
-  .info-box div {
-    width: 100%;
-  }
-
-  .header {
-    flex-direction: row;
-    padding: 10px;
-  }
-
-  .logo {
-    height: 40px;
-  }
-
-  .header h1 {
-    font-size: 1.5rem;
-  }
-
-  .header p {
-    font-size: 0.9rem;
-  }
+.chart canvas {
+  width: 100%;
+  height: 300px;
 }
 </style>
