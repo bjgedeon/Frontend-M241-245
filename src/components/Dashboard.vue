@@ -15,19 +15,16 @@ export default {
     const airQualityData = ref([]);
     const latestData = ref({});
     const formattedTime = ref(new Date().toLocaleTimeString());
-    const currentTheme = ref("dark"); // Store current theme (dark or light)
+    const isDarkMode = ref(true);
 
     const toggleTheme = () => {
-      // Toggle between dark and light modes
-      currentTheme.value = currentTheme.value === "dark" ? "light" : "dark";
-      const newTheme = currentTheme.value;
+      const newTheme = isDarkMode.value ? "dark" : "light";
       document.body.classList.remove("dark", "light");
       document.body.classList.add(newTheme);
     };
 
     const getIcon = (type) => {
-      // Dynamically return the correct icon based on the theme
-      return `/images/${type}-${currentTheme.value}mode.png`;
+      return `/images/${type}-${isDarkMode.value ? 'dark' : 'light'}mode.png`;
     };
 
     const getData = async () => {
@@ -75,7 +72,8 @@ export default {
       pressureData,
       airQualityData,
       toggleTheme,
-      getIcon, // Provide the method for icon switching
+      getIcon,
+      isDarkMode,
     };
   },
 };
@@ -90,9 +88,16 @@ export default {
         <h1>Luzern</h1>
         <p>{{ formattedTime }}</p>
       </div>
-      <button @click="toggleTheme">Dark/Light</button>
+      <!-- Fancy Dark/Light Mode Toggle -->
+      <label class="toggle-switch">
+        <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
+        <span class="slider">
+          <span v-if="isDarkMode" class="icon">🌙</span>
+          <span v-else class="icon">☀️</span>
+        </span>
+      </label>
     </div>
-    <!-- Luftqualitäts-Infos -->
+    <!-- Air Quality Info -->
     <div class="info-box">
       <div>
         <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
@@ -119,7 +124,7 @@ export default {
       </div>
     </div>
 
-    <!-- Diagramme -->
+    <!-- Charts -->
     <div class="charts">
       <div class="chart">
         <TemperatureChart :data="temperatureData" />
@@ -135,6 +140,60 @@ export default {
 </template>
 
 <style>
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+  transform: translateX(30px);
+}
+
+.icon {
+  font-size: 18px;
+  color: white;
+}
+
 .info-icon {
   width: 40px;
   height: 40px;
@@ -222,7 +281,6 @@ body.light {
   flex-grow: 1;
 }
 
-
 .header h1 {
   font-size: 1.8rem;
   margin: 0;
@@ -231,20 +289,6 @@ body.light {
 .header p {
   font-size: 1rem;
   margin: 0;
-}
-
-button {
-  padding: 10px 15px;
-  background-color: #4caf50;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 1rem;
-  border-radius: 5px;
-}
-
-button:hover {
-  background-color: #45a049;
 }
 
 /* Margin top to avoid overlap with fixed header */
@@ -265,12 +309,12 @@ button:hover {
 
 .info-box div {
   display: flex;
-  align-items: center;  /* Ensure that the icon and text align properly */
-  width: 48%; /* Ensure space between columns */
+  align-items: center;
+  width: 48%;
 }
 
 .info-box p {
-  margin: 0; /* Remove margin from paragraph */
+  margin: 0;
 }
 
 /* Diagramme */
@@ -322,11 +366,6 @@ button:hover {
 
   .header p {
     font-size: 0.9rem;
-  }
-
-  button {
-    font-size: 0.9rem;
-    padding: 8px 12px;
   }
 }
 </style>
