@@ -1,3 +1,68 @@
+<template>
+  <br />
+  <div class="dashboard">
+    <!-- Header -->
+    <div class="header">
+      <img src="/logo.png" alt="Dashboard Logo" class="logo" />
+      <div class="header-center">
+        <h1>Luzern</h1>
+        <p>{{ formattedTime }}</p>
+      </div>
+      <!-- Fancy Dark/Light Mode Toggle -->
+      <label class="toggle-switch">
+        <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
+        <span class="slider">
+          <span v-if="isDarkMode" class="icon">🌙</span>
+          <span v-else class="icon">☀️</span>
+        </span>
+      </label>
+    </div>
+    <!-- Air Quality Info -->
+    <div class="info-box">
+      <div>
+        <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
+        <p>Temperatur: {{ latestData.temperature }}°C</p>
+      </div>
+      <div>
+        <img
+          :src="getIcon('luftfeuchtigkeit')"
+          alt="Luftfeuchtigkeit"
+          class="info-icon"
+        />
+        <p>Luftfeuchtigkeit: {{ latestData.humidity }}%</p>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div>
+        <img :src="getIcon('luftdruck')" alt="Luftdruck" class="info-icon" />
+        <p>Luftdruck: {{ latestData.pressure }} hPa</p>
+      </div>
+      <div>
+        <img
+          :src="getIcon('luftqualitaet')"
+          alt="Luftqualität"
+          class="info-icon"
+        />
+        <p>Luftqualität: {{ latestData.airQuality }}</p>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts">
+      <div class="chart">
+        <TemperatureChart :data="temperatureData" />
+      </div>
+      <div class="chart">
+        <HumidityChart :data="humidityData" />
+      </div>
+      <div class="chart">
+        <AirQualityChart :data="airQualityData" />
+      </div>
+    </div>
+  </div>
+</template>
+
 <script>
 import { ref, onMounted } from "vue";
 import { fetchData } from "../api.js"; // Importiere die Funktion zum Abrufen der Daten
@@ -95,72 +160,8 @@ export default {
 };
 </script>
 
-<template>
-  <br />
-  <div class="dashboard">
-    <!-- Header -->
-    <div class="header">
-      <img src="/logo.png" alt="Dashboard Logo" class="logo" />
-      <div class="header-center">
-        <h1>Luzern</h1>
-        <p>{{ formattedTime }}</p>
-      </div>
-      <!-- Fancy Dark/Light Mode Toggle -->
-      <label class="toggle-switch">
-        <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
-        <span class="slider">
-          <span v-if="isDarkMode" class="icon">🌙</span>
-          <span v-else class="icon">☀️</span>
-        </span>
-      </label>
-    </div>
-    <!-- Air Quality Info -->
-    <div class="info-box">
-      <div>
-        <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
-        <p>Temperatur: {{ latestData.temperature }}°C</p>
-      </div>
-      <div>
-        <img
-          :src="getIcon('luftfeuchtigkeit')"
-          alt="Luftfeuchtigkeit"
-          class="info-icon"
-        />
-        <p>Luftfeuchtigkeit: {{ latestData.humidity }}%</p>
-      </div>
-    </div>
-
-    <div class="info-box">
-      <div>
-        <img :src="getIcon('luftdruck')" alt="Luftdruck" class="info-icon" />
-        <p>Luftdruck: {{ latestData.pressure }} hPa</p>
-      </div>
-      <div>
-        <img
-          :src="getIcon('luftqualitaet')"
-          alt="Luftqualität"
-          class="info-icon"
-        />
-        <p>Luftqualität: {{ latestData.airQuality }}</p>
-      </div>
-    </div>
-
-    <!-- Charts -->
-    <div class="charts">
-      <div class="chart">
-        <TemperatureChart :data="temperatureData" />
-      </div>
-      <div class="chart">
-        <HumidityChart :data="humidityData" />
-      </div>
-      <div class="chart">
-        <AirQualityChart :data="airQualityData" />
-      </div>
-    </div>
-  </div>
-</template>
-
 <style>
+/* Der neue Toggle-Stil */
 .toggle-switch {
   position: relative;
   display: inline-block;
