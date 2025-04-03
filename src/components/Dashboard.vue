@@ -8,13 +8,20 @@
         <h1>Luzern</h1>
         <p>{{ formattedTime }}</p>
       </div>
-      <!-- Fancy Dark/Light Mode Toggle -->
+
       <label class="toggle-switch">
         <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
         <span class="slider">
           <span v-if="isDarkMode" class="icon">🌙</span>
           <span v-else class="icon">☀️</span>
         </span>
+      </label>
+
+      <label class="client-dropdown">
+        <select v-model="selectedClient">
+          <option value="client1">Client 1</option>
+          <option value="client2">Client 2</option>
+        </select>
       </label>
     </div>
     <!-- Air Quality Info -->
@@ -356,5 +363,14 @@ body.light {
 .chart canvas {
   width: 100%;
   height: 300px;
+}
+
+.client-dropdown select {
+  padding: 10px;
+  margin-left: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: #fff;
+  border: 1px solid #ccc;
 }
 </style>
