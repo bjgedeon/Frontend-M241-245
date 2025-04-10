@@ -11,10 +11,14 @@
 
       <label class="toggle-switch">
         <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
-        <span class="slider">
-          <span v-if="isDarkMode" class="icon">🌙</span>
-          <span v-else class="icon">☀️</span>
-        </span>
+        <label class="toggle-switch">
+          <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
+          <span class="slider">
+            <span class="thumb">
+              {{ isDarkMode ? "🌙" : "☀️" }}
+            </span>
+          </span>
+        </label>
       </label>
 
       <label class="client-dropdown">
@@ -192,10 +196,31 @@ export default {
   background-color: #ccc;
   transition: 0.4s;
   border-radius: 50px;
+}
+
+.slider .thumb {
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  color: black;
+  font-size: 14px;
+  border-radius: 50%;
+  transition: transform 0.4s ease;
+  z-index: 2;
+}
+
+input:checked + .slider {
+  background-color: #4caf50;
+}
+
+input:checked + .slider .thumb {
+  transform: translateX(30px);
 }
 
 .slider:before {
