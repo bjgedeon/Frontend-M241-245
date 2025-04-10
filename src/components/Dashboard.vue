@@ -34,6 +34,8 @@
         <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
         <p>Temperatur: {{ latestData.temperature }}°C</p>
       </div>
+    </div>
+    <div class="info-box">
       <div>
         <img
           :src="getIcon('luftfeuchtigkeit')"
@@ -49,6 +51,9 @@
         <img :src="getIcon('luftdruck')" alt="Luftdruck" class="info-icon" />
         <p>Luftdruck: {{ latestData.pressure }} hPa</p>
       </div>
+    </div>
+
+    <div class="info-box">
       <div>
         <img
           :src="getIcon('luftqualitaet')"
