@@ -1,41 +1,57 @@
-// src/api.js
+const API_BASE_URL = 'http://172.18.12.60'; 
 
-const API_URL = 'http://localhost:8000';  // Deine API URL
+export async function generateToken(username, password) {
 
-// Funktion zum Token generieren
-export async function generateToken(credentials) {
   try {
-    const response = await fetch(`${API_URL}/user/new-session`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials)
-    });
+      const response = await fetch(`${API_BASE_URL}/user/new-session`, {
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`Token Fehler: ${error.detail}`);
-    }
+          method: 'POST',
 
-    return await response.json();  // Rückgabe des Tokens
+          headers: {
+              'Content-Type': 'application/json',
+              // Remove the Authorization header here since it is not needed for token generation
+          },
+
+          body: JSON.stringify({
+              username: username,
+              password: password
+          }),
+
+      });
+
+      if (!response.ok) {
+          throw new Error('Error: ' + response.statusText);
+      }
+
+      const data = await response.json();
+
+      console.log('Token erhalten:', data.token);
+
+      // Token und Gültigkeitsdatum im Zustand oder in einem Store speichern
+      return data.token;  // Return the token only
+
   } catch (error) {
-    throw new Error(`Fehler bei der Token-Erstellung: ${error.message}`);
+      console.error('Fehler beim Erstellen der Session:', error);
   }
 }
 
-// Funktion zum Abrufen von Sensor-Daten
-export async function fetchSensorData(clientName, token) {
+export const fetchData = async (token) => {
   try {
-    const response = await fetch(`${API_URL}/sensors/get-data?client=${clientName}`, {
-      headers: { 'token': token }
+    const response = await fetch(`${API_BASE_URL}/sensors/get-data`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`, // Use the token passed to this function
+        'Content-Type': 'application/json',
+      },
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`Sensor-Daten Fehler: ${error.detail}`);
+      throw new Error('Fehler beim Abrufen der Sensordaten');
     }
 
-    return await response.json();  // Rückgabe der Sensordaten
+    return await response.json(); // Return the data as JSON
   } catch (error) {
-    throw new Error(`Fehler beim Abrufen der Sensor-Daten: ${error.message}`);
+    console.error('Fehler beim Abrufen der Sensordaten:', error);
+    throw error;
   }
-}
+};

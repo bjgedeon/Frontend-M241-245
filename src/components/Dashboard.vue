@@ -1,3 +1,103 @@
+<script>
+import { ref, onMounted } from "vue";
+import { fetchData } from "../api.js"; // Stelle sicher, dass der Import korrekt ist
+import TemperatureChart from "./Charts/TemperatureChart.vue";
+import HumidityChart from "./Charts/HumidityChart.vue";
+import AirQualityChart from "./Charts/AirQualityChart.vue";
+
+export default {
+  components: { TemperatureChart, HumidityChart, AirQualityChart },
+
+  setup() {
+    const temperatureData = ref([]);
+    const humidityData = ref([]);
+    const pressureData = ref([]);
+    const airQualityData = ref([]);
+    const latestData = ref({});
+    const formattedTime = ref(new Date().toLocaleTimeString());
+    const isDarkMode = ref(true);
+    const selectedClient = ref("client1"); // Standardwert für den Client
+
+    const toggleTheme = () => {
+      const newTheme = isDarkMode.value ? "dark" : "light";
+      document.body.classList.remove("dark", "light");
+      document.body.classList.add(newTheme);
+    };
+
+    const getIcon = (type) => {
+      return `/images/${type}-${isDarkMode.value ? "dark" : "light"}mode.png`;
+    };
+
+    // Funktion zum Abrufen der Daten
+    const getData = async () => {
+      try {
+        const data = await fetchData(); // Daten aus der API holen
+        latestData.value = data[data.length - 1]; // Die letzten Daten als latestData speichern
+
+        // Daten für die Diagramme vorbereiten
+        temperatureData.value.push({
+          time: formattedTime.value,
+          temperature: latestData.value.temperature,
+        });
+        humidityData.value.push({
+          time: formattedTime.value,
+          humidity: latestData.value.humidity,
+        });
+        pressureData.value.push({
+          time: formattedTime.value,
+          pressure: latestData.value.pressure,
+        });
+        airQualityData.value.push({
+          time: formattedTime.value,
+          airQuality: latestData.value.airQuality,
+        });
+
+        formattedTime.value = new Date().toLocaleTimeString();
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Daten:", error);
+      }
+    };
+
+    // Funktion zum Aktualisieren der Charts alle 5 Minuten
+    const updateCharts = () => {
+      // Hier sorgen wir dafür, dass die Diagramme die neuesten Daten erhalten
+      temperatureData.value = [...temperatureData.value]; // Kopieren der Daten für das Diagramm
+      humidityData.value = [...humidityData.value];
+      airQualityData.value = [...airQualityData.value];
+    };
+
+    onMounted(() => {
+      document.body.classList.add("dark");
+      getData();
+
+      // Daten alle 1 Sekunde abrufen (aktuell halten)
+      setInterval(() => {
+        formattedTime.value = new Date().toLocaleTimeString(); // Uhrzeit wird alle 1 Sekunde aktualisiert
+        getData();
+      }, 1000);
+
+      // Diagramme nur alle 5 Minuten aktualisieren
+      setInterval(() => {
+        updateCharts();
+      }, 300000); // 5 Minuten Intervall für die Charts
+    });
+
+    return {
+      latestData,
+      formattedTime,
+      temperatureData,
+      humidityData,
+      pressureData,
+      airQualityData,
+      toggleTheme,
+      getIcon,
+      isDarkMode,
+      selectedClient,
+    };
+  },
+};
+</script>
+
 <template>
   <br />
   <div class="dashboard">
@@ -78,103 +178,6 @@
     </div>
   </div>
 </template>
-
-<script>
-import { ref, onMounted } from "vue";
-import { fetchData } from "../api.js"; // Importiere die Funktion zum Abrufen der Daten
-import TemperatureChart from "./Charts/TemperatureChart.vue";
-import HumidityChart from "./Charts/HumidityChart.vue";
-import AirQualityChart from "./Charts/AirQualityChart.vue";
-
-export default {
-  components: { TemperatureChart, HumidityChart, AirQualityChart },
-
-  setup() {
-    const temperatureData = ref([]);
-    const humidityData = ref([]);
-    const pressureData = ref([]);
-    const airQualityData = ref([]);
-    const latestData = ref({});
-    const formattedTime = ref(new Date().toLocaleTimeString());
-    const isDarkMode = ref(true);
-
-    const toggleTheme = () => {
-      const newTheme = isDarkMode.value ? "dark" : "light";
-      document.body.classList.remove("dark", "light");
-      document.body.classList.add(newTheme);
-    };
-
-    const getIcon = (type) => {
-      return `/images/${type}-${isDarkMode.value ? "dark" : "light"}mode.png`;
-    };
-
-    // Funktion zum Abrufen der Daten
-    const getData = async () => {
-      try {
-        const data = await fetchData(); // Daten aus sensorData.json holen
-        latestData.value = data[data.length - 1]; // Die letzten Daten als latestData speichern
-
-        temperatureData.value.push({
-          time: formattedTime.value,
-          temperature: latestData.value.temperature,
-        });
-        humidityData.value.push({
-          time: formattedTime.value,
-          humidity: latestData.value.humidity,
-        });
-        pressureData.value.push({
-          time: formattedTime.value,
-          pressure: latestData.value.pressure,
-        });
-        airQualityData.value.push({
-          time: formattedTime.value,
-          airQuality: latestData.value.airQuality,
-        });
-
-        formattedTime.value = new Date().toLocaleTimeString();
-      } catch (error) {
-        console.error("Fehler beim Abrufen der Daten:", error);
-      }
-    };
-
-    // Funktion zum Aktualisieren der Charts alle 5 Minuten
-    const updateCharts = () => {
-      // Hier sorgen wir dafür, dass die Diagramme die neuesten Daten erhalten
-      temperatureData.value = [...temperatureData.value]; // Kopieren der Daten für das Diagramm
-      humidityData.value = [...humidityData.value];
-      airQualityData.value = [...airQualityData.value];
-    };
-
-    onMounted(() => {
-      document.body.classList.add("dark");
-      getData();
-
-      // Daten alle 1 Sekunde abrufen (aktuell halten)
-      setInterval(() => {
-        formattedTime.value = new Date().toLocaleTimeString(); // Uhrzeit wird alle 1 Sekunde aktualisiert
-        getData();
-      }, 1000);
-
-      // Diagramme nur alle 5 Minuten aktualisieren
-      setInterval(() => {
-        updateCharts();
-      }, 300000); // 5 Minuten Intervall für die Charts
-    });
-
-    return {
-      latestData,
-      formattedTime,
-      temperatureData,
-      humidityData,
-      pressureData,
-      airQualityData,
-      toggleTheme,
-      getIcon,
-      isDarkMode,
-    };
-  },
-};
-</script>
 
 <style>
 /* Der neue Toggle-Stil */
