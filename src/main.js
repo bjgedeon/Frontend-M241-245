@@ -1,7 +1,7 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router' // Deine Router-Konfiguration importieren
+import { createApp } from "vue";
+import App from "./App.vue";
+import router from "./router"; // 👈 wichtig
 
-createApp(App)
-  .use(router)  // Vue Router aktivieren
-  .mount('#app')
+const app = createApp(App);
+app.use(router); // 👈 wichtig
+app.mount("#app");

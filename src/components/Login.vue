@@ -1,9 +1,11 @@
 <script>
 import { ref } from "vue";
-import { generateToken } from "../api.js";
+import { useRouter } from "vue-router"; // Router importieren
+import { generateToken } from "../api.js"; // deine API-Methode
 
 export default {
   setup() {
+    const router = useRouter(); // Router Instanz
     const username = ref("");
     const password = ref("");
     const errorMessage = ref("");
@@ -14,7 +16,8 @@ export default {
 
         if (token) {
           localStorage.setItem("auth_token", token);
-          window.location.href = "/dashboard"; // oder verwende Vue Router: this.$router.push('/dashboard')
+          router.push("/dashboard"); // Seite wechseln mit Vue Router
+          
         } else {
           errorMessage.value = "Anmeldung fehlgeschlagen. Kein Token erhalten.";
         }
