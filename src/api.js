@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://172.18.14.20:8443'; 
+const API_BASE_URL = 'http://172.18.14.20:8080'; 
 
 export async function generateToken(username, password) {
 

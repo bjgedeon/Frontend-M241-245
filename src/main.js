@@ -1,7 +1,7 @@
-import './assets/main.css'
-
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
+import router from './router' // Deine Router-Konfiguration importieren
 
-createApp(App).mount('#app')
+createApp(App)
+  .use(router)  // Vue Router aktivieren
+  .mount('#app')
