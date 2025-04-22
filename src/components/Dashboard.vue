@@ -30,33 +30,45 @@ export default {
 
     // Funktion zum Abrufen der Daten
     const getData = async () => {
-      try {
-        const data = await fetchData(); // Daten aus der API holen
-        latestData.value = data[data.length - 1]; // Die letzten Daten als latestData speichern
+  try {
+    const token = localStorage.getItem("auth_token");
+    if (!token) {
+      throw new Error("Kein Token im Speicher gefunden");
+    }
 
-        // Daten für die Diagramme vorbereiten
-        temperatureData.value.push({
-          time: formattedTime.value,
-          temperature: latestData.value.temperature,
-        });
-        humidityData.value.push({
-          time: formattedTime.value,
-          humidity: latestData.value.humidity,
-        });
-        pressureData.value.push({
-          time: formattedTime.value,
-          pressure: latestData.value.pressure,
-        });
-        airQualityData.value.push({
-          time: formattedTime.value,
-          airQuality: latestData.value.airQuality,
-        });
+    const data = await fetchData(selectedClient.value, token);
+    if (!data || data.length === 0) return;
 
-        formattedTime.value = new Date().toLocaleTimeString();
-      } catch (error) {
-        console.error("Fehler beim Abrufen der Daten:", error);
-      }
-    };
+    const latest = data[data.length - 1];
+    latestData.value = latest;
+
+    formattedTime.value = new Date(latest.timestamp).toLocaleTimeString();
+
+    temperatureData.value.push({
+      time: formattedTime.value,
+      temperature: latest.temperature,
+    });
+
+    humidityData.value.push({
+      time: formattedTime.value,
+      humidity: latest.humidity,
+    });
+
+    pressureData.value.push({
+      time: formattedTime.value,
+      pressure: latest.pressure,
+    });
+
+    airQualityData.value.push({
+      time: formattedTime.value,
+      airQuality: latest.voc, // hier voc statt airQuality
+    });
+
+  } catch (error) {
+    console.error("Fehler beim Abrufen der Daten:", error);
+  }
+};
+
 
     // Funktion zum Aktualisieren der Charts alle 5 Minuten
     const updateCharts = () => {

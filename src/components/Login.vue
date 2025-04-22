@@ -1,94 +1,84 @@
-<template>
-  <div class="login-container">
-    <form @submit.prevent="login">
-      <label for="username">Benutzername:</label>
-      <input type="text" id="username" v-model="username" placeholder="Benutzername" required />
-      
-      <label for="password">Passwort:</label>
-      <input type="password" id="password" v-model="password" placeholder="Passwort" required />
-      
-      <button type="submit">Anmelden</button>
-      <p v-if="loginError" style="color: red;">Ungültiger Benutzername oder Passwort</p>
-    </form>
-  </div>
-</template>
-
 <script>
-import { generateToken } from '../api.js'; // API-Import
+import { ref } from "vue";
+import { generateToken } from "../api.js";
 
 export default {
-  data() {
-    return {
-      username: '',
-      password: '',
-      loginError: false,
-    };
-  },
-  methods: {
-    async login() {
-      try {
-        // Wir rufen die API auf, um den Token zu generieren
-        const response = await generateToken(this.username, this.password);
+  setup() {
+    const username = ref("");
+    const password = ref("");
+    const errorMessage = ref("");
 
-        // Erfolgreiche Anmeldung: Token im LocalStorage speichern
-        if (response.token) {
-          localStorage.setItem('authToken', response.token); // Token im LocalStorage speichern
-          this.$emit('login-success'); // Erfolgreiche Anmeldung
-          this.loginError = false;
-          // Optional: Weiterleitung oder andere Aktionen nach erfolgreichem Login
+    const login = async () => {
+      try {
+        const token = await generateToken(username.value, password.value);
+
+        if (token) {
+          localStorage.setItem("auth_token", token);
+          window.location.href = "/dashboard"; // oder verwende Vue Router: this.$router.push('/dashboard')
         } else {
-          throw new Error('Kein Token erhalten.');
+          errorMessage.value = "Anmeldung fehlgeschlagen. Kein Token erhalten.";
         }
       } catch (error) {
-        console.error('Login-Fehler:', error.message);
-        this.loginError = true; // Fehleranzeige bei ungültigen Anmeldedaten
+        errorMessage.value = "Anmeldung fehlgeschlagen. Bitte überprüfe Benutzername und Passwort.";
+        console.error(error);
       }
-    },
+    };
+
+    return {
+      username,
+      password,
+      errorMessage,
+      login,
+    };
   },
 };
 </script>
 
+<template>
+  <div class="login-container">
+    <h2>Login</h2>
+    <input v-model="username" type="text" placeholder="Benutzername" />
+    <input v-model="password" type="password" placeholder="Passwort" />
+    <button @click="login">Anmelden</button>
+    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+  </div>
+</template>
+
 <style scoped>
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-form {
+  max-width: 400px;
+  margin: 100px auto;
   display: flex;
   flex-direction: column;
-  max-width: 300px;
-  width: 100%;
-  padding: 20px;
-  background-color: #fff;
+  gap: 15px;
+  padding: 30px;
   border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-label {
-  margin-top: 10px;
+  background-color: #2c2c2c;
+  color: white;
 }
 
 input {
-  margin-top: 5px;
   padding: 10px;
   border-radius: 4px;
-  border: 1px solid #ccc;
+  border: none;
+  font-size: 16px;
 }
 
 button {
-  margin-top: 20px;
   padding: 10px;
-  background-color: #007bff;
-  color: white;
   border: none;
-  border-radius: 4px;
+  background-color: #4caf50;
+  color: white;
+  font-size: 16px;
   cursor: pointer;
+  border-radius: 4px;
 }
 
 button:hover {
-  background-color: #0056b3;
-} 
+  background-color: #45a049;
+}
+
+.error {
+  color: red;
+}
 </style>
