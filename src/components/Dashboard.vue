@@ -128,39 +128,45 @@ export default {
       </label>
     </div>
 
-    <div class="info-box">
-      <div>
-        <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
-        <p>Temperatur: {{ latestData.temperature }}°C</p>
+    <div class="info-grid">
+      <div class="info-box">
+        <div>
+          <img
+            :src="getIcon('temperatur')"
+            alt="Temperatur"
+            class="info-icon"
+          />
+          <p>Temperatur: {{ latestData.temperature }}°C</p>
+        </div>
       </div>
-    </div>
 
-    <div class="info-box">
-      <div>
-        <img
-          :src="getIcon('luftfeuchtigkeit')"
-          alt="Luftfeuchtigkeit"
-          class="info-icon"
-        />
-        <p>Luftfeuchtigkeit: {{ latestData.humidity }}%</p>
+      <div class="info-box">
+        <div>
+          <img
+            :src="getIcon('luftfeuchtigkeit')"
+            alt="Luftfeuchtigkeit"
+            class="info-icon"
+          />
+          <p>Luftfeuchtigkeit: {{ latestData.humidity }}%</p>
+        </div>
       </div>
-    </div>
 
-    <div class="info-box">
-      <div>
-        <img :src="getIcon('luftdruck')" alt="Luftdruck" class="info-icon" />
-        <p>Luftdruck: {{ latestData.pressure }} hPa</p>
+      <div class="info-box">
+        <div>
+          <img :src="getIcon('luftdruck')" alt="Luftdruck" class="info-icon" />
+          <p>Luftdruck: {{ latestData.pressure }} hPa</p>
+        </div>
       </div>
-    </div>
 
-    <div class="info-box">
-      <div>
-        <img
-          :src="getIcon('luftqualitaet')"
-          alt="Luftqualität"
-          class="info-icon"
-        />
-        <p>Luftqualität: {{ latestData.airQuality }}</p>
+      <div class="info-box">
+        <div>
+          <img
+            :src="getIcon('luftqualitaet')"
+            alt="Luftqualität"
+            class="info-icon"
+          />
+          <p>Luftqualität: {{ latestData.airQuality }}</p>
+        </div>
       </div>
     </div>
 
@@ -364,7 +370,17 @@ body.light {
   border: 1px solid #ccc;
 }
 
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 20px;
+}
+
 @media (max-width: 768px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
   .client-dropdown,
   .toggle-switch {
     margin-top: 10px;
