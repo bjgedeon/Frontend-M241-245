@@ -29,45 +29,43 @@ export default {
     };
 
     const getData = async () => {
-  try {
-    const token = localStorage.getItem("auth_token");
-    if (!token) {
-      throw new Error("Kein Token im Speicher gefunden");
-    }
+      try {
+        const token = localStorage.getItem("auth_token");
+        if (!token) {
+          throw new Error("Kein Token im Speicher gefunden");
+        }
 
-    const data = await fetchData(selectedClient.value, token);
-    if (!data || data.length === 0) return;
+        const data = await fetchData(selectedClient.value, token);
+        if (!data || data.length === 0) return;
 
-    const latest = data[data.length - 1];
-    latestData.value = latest;
+        const latest = data[data.length - 1];
+        latestData.value = latest;
 
-    formattedTime.value = new Date(latest.timestamp).toLocaleTimeString();
+        formattedTime.value = new Date(latest.timestamp).toLocaleTimeString();
 
-    temperatureData.value.push({
-      time: formattedTime.value,
-      temperature: latest.temperature,
-    });
+        temperatureData.value.push({
+          time: formattedTime.value,
+          temperature: latest.temperature,
+        });
 
-    humidityData.value.push({
-      time: formattedTime.value,
-      humidity: latest.humidity,
-    });
+        humidityData.value.push({
+          time: formattedTime.value,
+          humidity: latest.humidity,
+        });
 
-    pressureData.value.push({
-      time: formattedTime.value,
-      pressure: latest.pressure,
-    });
+        pressureData.value.push({
+          time: formattedTime.value,
+          pressure: latest.pressure,
+        });
 
-    airQualityData.value.push({
-      time: formattedTime.value,
-      airQuality: latest.voc,
-    });
-
-  } catch (error) {
-    console.error("Fehler beim Abrufen der Daten:", error);
-  }
-};
-
+        airQualityData.value.push({
+          time: formattedTime.value,
+          airQuality: latest.voc,
+        });
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Daten:", error);
+      }
+    };
 
     const updateCharts = () => {
       temperatureData.value = [...temperatureData.value];
@@ -78,7 +76,6 @@ export default {
     onMounted(() => {
       document.body.classList.add("dark");
       getData();
-
 
       setInterval(() => {
         formattedTime.value = new Date().toLocaleTimeString();
@@ -117,16 +114,12 @@ export default {
       </div>
 
       <label class="toggle-switch">
-        <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
-        <label class="toggle-switch">
-          <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
-          <span class="slider">
-            <span class="thumb">
-              {{ isDarkMode ? "🌙" : "☀️" }}
-            </span>
-          </span>
-        </label>
-      </label>
+  <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
+  <span class="slider">
+    <span class="icon">{{ isDarkMode ? "🌙" : "☀️" }}</span>
+  </span>
+</label>
+
 
       <label class="client-dropdown">
         <select v-model="selectedClient">
@@ -135,12 +128,14 @@ export default {
         </select>
       </label>
     </div>
+
     <div class="info-box">
       <div>
         <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
         <p>Temperatur: {{ latestData.temperature }}°C</p>
       </div>
     </div>
+
     <div class="info-box">
       <div>
         <img
@@ -185,7 +180,6 @@ export default {
 </template>
 
 <style>
-
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -200,61 +194,31 @@ export default {
 }
 
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
+  position: relative;
+  background-color: white;
   border-radius: 50px;
+  width: 100%;
+  height: 100%;
+  transition: background-color 0.4s ease;
+  overflow: hidden;
 }
 
-.slider .thumb {
+.toggle-switch input:checked + .slider {
+  background-color: black;
+}
+
+.slider .icon {
   position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 22px;
-  width: 22px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  transition: left 0.4s ease, right 0.4s ease, color 0.4s;
   color: black;
-  font-size: 14px;
-  border-radius: 50%;
-  transition: transform 0.4s ease;
-  z-index: 2;
+  left: 8px;
 }
 
-input:checked + .slider {
-  background-color: #4caf50;
-}
 
-input:checked + .slider .thumb {
-  transform: translateX(30px);
-}
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 22px;
-  width: 22px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #4caf50;
-}
-
-input:checked + .slider:before {
-  transform: translateX(30px);
-}
 
 .icon {
   font-size: 18px;
@@ -274,12 +238,9 @@ input:checked + .slider:before {
 }
 
 .dashboard {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  transition: background-color 0.3s, color 0.3s;
-  width: 100%;
-  height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .dark {
@@ -336,6 +297,7 @@ body.light {
   width: 100%;
   z-index: 1000;
   box-sizing: border-box;
+  font-family: sans-serif;
 }
 
 .header-center {
@@ -404,5 +366,58 @@ body.light {
   border-radius: 5px;
   background-color: #fff;
   border: 1px solid #ccc;
+}
+
+@media (max-width: 768px) {
+  .client-dropdown,
+  .toggle-switch {
+    margin-top: 10px;
+  }
+
+  .info-box {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .info-box div {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .charts {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .chart canvas {
+    height: 200px;
+  }
+
+  .logo {
+    height: 40px;
+  }
+
+  .dashboard {
+    padding: 10px;
+  }
+
+  .client-dropdown select {
+    font-size: 14px;
+    padding: 8px;
+  }
+}
+/* 2 Charts nebeneinander bei mittelgroßen Bildschirmen */
+@media (max-width: 1024px) {
+  .charts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* 1 Chart pro Reihe bei kleinen Bildschirmen */
+@media (max-width: 768px) {
+  .charts {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
 }
 </style>
