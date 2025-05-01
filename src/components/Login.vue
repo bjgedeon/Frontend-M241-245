@@ -101,7 +101,7 @@ button:hover {
 }
 
 .error {
-  color: #e75c00;
+  color: #f46303;
   text-align: center;
 }
 </style>
