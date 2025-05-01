@@ -399,5 +399,57 @@ body.light {
   border: 1px solid #ccc;
 }
 
+@media (max-width: 768px) {
+  .client-dropdown,
+  .toggle-switch {
+    margin-top: 10px;
+  }
+
+  .info-box {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .info-box div {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .charts {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .chart canvas {
+    height: 200px;
+  }
+
+  .logo {
+    height: 40px;
+  }
+
+  .dashboard {
+    padding: 10px;
+  }
+
+  .client-dropdown select {
+    font-size: 14px;
+    padding: 8px;
+  }
+}
+/* 2 Charts nebeneinander bei mittelgroßen Bildschirmen */
+@media (max-width: 1024px) {
+  .charts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* 1 Chart pro Reihe bei kleinen Bildschirmen */
+@media (max-width: 768px) {
+  .charts {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
 
 </style>
