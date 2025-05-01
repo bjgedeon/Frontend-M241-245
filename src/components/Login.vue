@@ -19,7 +19,7 @@ export default {
           router.push("/dashboard");
           
         } else {
-          errorMessage.value = "Anmeldung fehlgeschlagen. Kein Token erhalten.";
+          errorMessage.value = "Anmeldung fehlgeschlagen.";
         }
       } catch (error) {
         errorMessage.value = "Anmeldung fehlgeschlagen. Bitte überprüfe Benutzername und Passwort.";
