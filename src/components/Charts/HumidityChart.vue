@@ -1,13 +1,8 @@
 <template>
-    <div>
-      <apexchart
-        type="line"
-        width="400"
-        height="300"
-        :options="chartOptions"
-        :series="series"
-      />
-    </div>
+  <div>
+    <apexchart type="line" :options="chartOptions" :series="series" />
+  </div>
+
   </template>
   
   <script>
@@ -33,20 +28,47 @@
       ]);
   
       const chartOptions = computed(() => ({
+  chart: {
+    type: 'line',
+    zoom: {
+      enabled: false,
+    },
+    toolbar: {
+      show: false,
+    },
+    animations: {
+      enabled: true,
+    },
+    foreColor: '#ccc',
+    height: '100%',
+    width: '100%',
+  },
+  responsive: [
+    {
+      breakpoint: 768,
+      options: {
         chart: {
-          type: 'line',
-          zoom: {
-            enabled: false,
-          },
+          height: 250,
         },
-        xaxis: {
-          categories: props.data.map((item) => item.time),
+      },
+    },
+    {
+      breakpoint: 480,
+      options: {
+        chart: {
+          height: 200,
         },
-        stroke: {
-          curve: 'smooth',
-        },
-        colors: ['#00ff00'],
-      }));
+      },
+    },
+  ],
+  stroke: {
+    curve: 'smooth',
+  },
+  xaxis: {
+    categories: props.data.map((item) => item.time),
+  },
+  colors: ['#007bff'], // oder #ff0000 / #00ff00 je nach Chart
+}));
   
       return {
         series,
@@ -55,4 +77,3 @@
     },
   });
   </script>
-  

@@ -1,58 +1,78 @@
 <template>
-    <div>
-      <apexchart
-        type="line"
-        width="400"
-        height="300"
-        :options="chartOptions"
-        :series="series"
-      />
-    </div>
-  </template>
-  
-  <script>
-  import { defineComponent, computed } from 'vue';
-  import VueApexCharts from 'vue3-apexcharts';
-  
-  export default defineComponent({
-    components: {
-      apexchart: VueApexCharts,
+  <div>
+    <apexchart type="line" :options="chartOptions" :series="series" />
+  </div>
+</template>
+
+<script>
+import { defineComponent, computed } from "vue";
+import VueApexCharts from "vue3-apexcharts";
+
+export default defineComponent({
+  components: {
+    apexchart: VueApexCharts,
+  },
+  props: {
+    data: {
+      type: Array,
+      required: true,
     },
-    props: {
-      data: {
-        type: Array,
-        required: true,
+  },
+  setup(props) {
+    const series = computed(() => [
+      {
+        name: "Temperatur",
+        data: props.data.map((item) => item.temperature),
       },
-    },
-    setup(props) {
-      const series = computed(() => [
-        {
-          name: 'Temperatur',
-          data: props.data.map((item) => item.temperature),
+    ]);
+
+    const chartOptions = computed(() => ({
+      chart: {
+        type: "line",
+        zoom: {
+          enabled: false,
         },
-      ]);
-  
-      const chartOptions = computed(() => ({
-        chart: {
-          type: 'line',
-          zoom: {
-            enabled: false,
+        toolbar: {
+          show: false,
+        },
+        animations: {
+          enabled: true,
+        },
+        foreColor: "#ccc",
+        height: "100%",
+        width: "100%",
+      },
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            chart: {
+              height: 250,
+            },
           },
         },
-        xaxis: {
-          categories: props.data.map((item) => item.time),
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              height: 200,
+            },
+          },
         },
-        stroke: {
-          curve: 'smooth',
-        },
-        colors: ['#ff0000'], // Rote Linie für Temperatur
-      }));
-  
-      return {
-        series,
-        chartOptions,
-      };
-    },
-  });
-  </script>
-  
+      ],
+      stroke: {
+        curve: "smooth",
+      },
+      xaxis: {
+        categories: props.data.map((item) => item.time),
+      },
+      colors: ["#007bff"], // oder #ff0000 / #00ff00 je nach Chart
+    }));
+
+    return {
+      series,
+      chartOptions,
+    };
+  },
+});
+</script>

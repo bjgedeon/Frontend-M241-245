@@ -29,45 +29,43 @@ export default {
     };
 
     const getData = async () => {
-  try {
-    const token = localStorage.getItem("auth_token");
-    if (!token) {
-      throw new Error("Kein Token im Speicher gefunden");
-    }
+      try {
+        const token = localStorage.getItem("auth_token");
+        if (!token) {
+          throw new Error("Kein Token im Speicher gefunden");
+        }
 
-    const data = await fetchData(selectedClient.value, token);
-    if (!data || data.length === 0) return;
+        const data = await fetchData(selectedClient.value, token);
+        if (!data || data.length === 0) return;
 
-    const latest = data[data.length - 1];
-    latestData.value = latest;
+        const latest = data[data.length - 1];
+        latestData.value = latest;
 
-    formattedTime.value = new Date(latest.timestamp).toLocaleTimeString();
+        formattedTime.value = new Date(latest.timestamp).toLocaleTimeString();
 
-    temperatureData.value.push({
-      time: formattedTime.value,
-      temperature: latest.temperature,
-    });
+        temperatureData.value.push({
+          time: formattedTime.value,
+          temperature: latest.temperature,
+        });
 
-    humidityData.value.push({
-      time: formattedTime.value,
-      humidity: latest.humidity,
-    });
+        humidityData.value.push({
+          time: formattedTime.value,
+          humidity: latest.humidity,
+        });
 
-    pressureData.value.push({
-      time: formattedTime.value,
-      pressure: latest.pressure,
-    });
+        pressureData.value.push({
+          time: formattedTime.value,
+          pressure: latest.pressure,
+        });
 
-    airQualityData.value.push({
-      time: formattedTime.value,
-      airQuality: latest.voc,
-    });
-
-  } catch (error) {
-    console.error("Fehler beim Abrufen der Daten:", error);
-  }
-};
-
+        airQualityData.value.push({
+          time: formattedTime.value,
+          airQuality: latest.voc,
+        });
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Daten:", error);
+      }
+    };
 
     const updateCharts = () => {
       temperatureData.value = [...temperatureData.value];
@@ -78,7 +76,6 @@ export default {
     onMounted(() => {
       document.body.classList.add("dark");
       getData();
-
 
       setInterval(() => {
         formattedTime.value = new Date().toLocaleTimeString();
@@ -118,14 +115,11 @@ export default {
 
       <label class="toggle-switch">
         <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
-        <label class="toggle-switch">
-          <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
-          <span class="slider">
-            <span class="thumb">
-              {{ isDarkMode ? "🌙" : "☀️" }}
-            </span>
+        <span class="slider">
+          <span class="thumb">
+            {{ isDarkMode ? "🌙" : "☀️" }}
           </span>
-        </label>
+        </span>
       </label>
 
       <label class="client-dropdown">
@@ -135,12 +129,14 @@ export default {
         </select>
       </label>
     </div>
+
     <div class="info-box">
       <div>
         <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
         <p>Temperatur: {{ latestData.temperature }}°C</p>
       </div>
     </div>
+
     <div class="info-box">
       <div>
         <img
@@ -185,7 +181,6 @@ export default {
 </template>
 
 <style>
-
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -274,12 +269,9 @@ input:checked + .slider:before {
 }
 
 .dashboard {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  transition: background-color 0.3s, color 0.3s;
-  width: 100%;
-  height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .dark {
@@ -336,6 +328,7 @@ body.light {
   width: 100%;
   z-index: 1000;
   box-sizing: border-box;
+  font-family: sans-serif;
 }
 
 .header-center {
@@ -405,4 +398,6 @@ body.light {
   background-color: #fff;
   border: 1px solid #ccc;
 }
+
+
 </style>
