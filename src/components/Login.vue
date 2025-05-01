@@ -53,35 +53,55 @@ export default {
   margin: 100px auto;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding: 30px;
-  border-radius: 8px;
-  background-color: #2c2c2c;
-  color: white;
+  gap: 20px;
+  padding: 40px;
+  border-radius: 12px;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: 500;
+  font-size: 24px;
 }
 
 input {
-  padding: 10px;
-  border-radius: 4px;
-  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: white;
   font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #4caf50;
 }
 
 button {
-  padding: 10px;
-  border: none;
+  padding: 12px;
   background-color: #4caf50;
+  border: none;
   color: white;
   font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
   cursor: pointer;
-  border-radius: 4px;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #29b941;
 }
 
 .error {
-  color: red;
+  color: #e76400;
+  text-align: center;
 }
 </style>
