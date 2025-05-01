@@ -41,6 +41,10 @@ export default {
 <template>
   <div class="login-page">
     <div class="login-container">
+      <div class="branding">
+        <img src="/logo.png" alt="Dashboard Logo" class="logo" />
+        <span class="brand-text">Breeze</span>
+      </div>
       <h2>Login</h2>
       <input v-model="username" type="text" placeholder="Benutzername" />
       <input v-model="password" type="password" placeholder="Passwort" />
@@ -65,6 +69,25 @@ body {
   overflow: hidden; /* verhindert Scrollbars */
   height: 100%;
   width: 100%;
+}
+
+.branding {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.logo {
+  max-width: 50px;
+  height: auto;
+}
+
+.brand-text {
+  font-size: 32px;
+  font-weight: 600;
+  color: white;
+  font-family: 'Segoe UI', Roboto, sans-serif;
 }
 
 /* Komponentenspezifische Styles */
