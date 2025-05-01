@@ -19,10 +19,10 @@ export default {
           router.push("/dashboard");
           
         } else {
-          errorMessage.value = "Anmeldung fehlgeschlagen.";
+          errorMessage.value = "Anmeldung fehlgeschlagen";
         }
       } catch (error) {
-        errorMessage.value = "Anmeldung fehlgeschlagen. Bitte überprüfe Benutzername und Passwort.";
+        errorMessage.value = "Anmeldung fehlgeschlagen \n Bitte überprüfe Benutzername und Passwort";
         console.error(error);
       }
     };
