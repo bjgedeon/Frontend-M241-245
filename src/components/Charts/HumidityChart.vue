@@ -36,6 +36,14 @@ export default defineComponent({
         height: "100%",
         width: "100%",
       },
+      title: {
+        text: "Luftfeuchtigkeit",
+        align: "center",
+        style: {
+          fontSize: "16px",
+          color: "#ffffff",
+        },
+      },
       responsive: [
         {
           breakpoint: 768,
@@ -59,9 +67,23 @@ export default defineComponent({
       stroke: { curve: "smooth" },
       xaxis: {
         categories: props.data.map((item) => item.time),
+        title: {
+          text: "Zeit (vor wie lange)",
+          style: {
+            fontSize: "12px",
+            color: "#ffffff",
+          },
+        },
         labels: { style: { fontSize: "12px" } },
       },
       yaxis: {
+        title: {
+          text: "Temperatur (°C)",
+          style: {
+            fontSize: "12px",
+            color: "#ffffff",
+          },
+        },
         labels: { style: { fontSize: "12px" } },
       },
       colors: ["#007bff"],

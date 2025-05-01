@@ -114,12 +114,11 @@ export default {
       </div>
 
       <label class="toggle-switch">
-  <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
-  <span class="slider">
-    <span class="icon">{{ isDarkMode ? "🌙" : "☀️" }}</span>
-  </span>
-</label>
-
+        <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
+        <span class="slider">
+          <span class="icon">{{ isDarkMode ? "🌙" : "☀️" }}</span>
+        </span>
+      </label>
 
       <label class="client-dropdown">
         <select v-model="selectedClient">
@@ -216,9 +215,6 @@ export default {
   color: black;
   left: 8px;
 }
-
-
-
 
 .icon {
   font-size: 18px;
