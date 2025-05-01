@@ -3,8 +3,8 @@ import Login from "../components/Login.vue";
 import Dashboard from "../components/Dashboard.vue";
 
 const routes = [
-  { path: "/", name: "Login", component: Login },
-  { path: "/login", name: "Login", component: Login }, // Hier ist die Login-Route
+  { path: "/", redirect: "/login" },
+  { path: "/login", name: "Login", component: Login },
   { path: "/dashboard", name: "Dashboard", component: Dashboard },
 ];
 
