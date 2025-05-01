@@ -1,6 +1,6 @@
 <script>
 import { ref, onMounted } from "vue";
-import { fetchData } from "../api.js"; // Stelle sicher, dass der Import korrekt ist
+import { fetchData } from "../api.js";
 import TemperatureChart from "./Charts/TemperatureChart.vue";
 import HumidityChart from "./Charts/HumidityChart.vue";
 import AirQualityChart from "./Charts/AirQualityChart.vue";
@@ -16,7 +16,7 @@ export default {
     const latestData = ref({});
     const formattedTime = ref(new Date().toLocaleTimeString());
     const isDarkMode = ref(true);
-    const selectedClient = ref("client1"); // Standardwert für den Client
+    const selectedClient = ref("client1");
 
     const toggleTheme = () => {
       const newTheme = isDarkMode.value ? "dark" : "light";
@@ -28,7 +28,6 @@ export default {
       return `/images/${type}-${isDarkMode.value ? "dark" : "light"}mode.png`;
     };
 
-    // Funktion zum Abrufen der Daten
     const getData = async () => {
   try {
     const token = localStorage.getItem("auth_token");
@@ -61,7 +60,7 @@ export default {
 
     airQualityData.value.push({
       time: formattedTime.value,
-      airQuality: latest.voc, // hier voc statt airQuality
+      airQuality: latest.voc,
     });
 
   } catch (error) {
@@ -70,10 +69,8 @@ export default {
 };
 
 
-    // Funktion zum Aktualisieren der Charts alle 5 Minuten
     const updateCharts = () => {
-      // Hier sorgen wir dafür, dass die Diagramme die neuesten Daten erhalten
-      temperatureData.value = [...temperatureData.value]; // Kopieren der Daten für das Diagramm
+      temperatureData.value = [...temperatureData.value];
       humidityData.value = [...humidityData.value];
       airQualityData.value = [...airQualityData.value];
     };
@@ -82,16 +79,15 @@ export default {
       document.body.classList.add("dark");
       getData();
 
-      // Daten alle 1 Sekunde abrufen (aktuell halten)
+
       setInterval(() => {
-        formattedTime.value = new Date().toLocaleTimeString(); // Uhrzeit wird alle 1 Sekunde aktualisiert
+        formattedTime.value = new Date().toLocaleTimeString();
         getData();
       }, 1000);
 
-      // Diagramme nur alle 5 Minuten aktualisieren
       setInterval(() => {
         updateCharts();
-      }, 300000); // 5 Minuten Intervall für die Charts
+      }, 300000);
     });
 
     return {
@@ -113,7 +109,6 @@ export default {
 <template>
   <br />
   <div class="dashboard">
-    <!-- Header -->
     <div class="header">
       <img src="/logo.png" alt="Dashboard Logo" class="logo" />
       <div class="header-center">
@@ -140,7 +135,6 @@ export default {
         </select>
       </label>
     </div>
-    <!-- Air Quality Info -->
     <div class="info-box">
       <div>
         <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
@@ -176,7 +170,6 @@ export default {
       </div>
     </div>
 
-    <!-- Charts -->
     <div class="charts">
       <div class="chart">
         <TemperatureChart :data="temperatureData" />
@@ -192,7 +185,7 @@ export default {
 </template>
 
 <style>
-/* Der neue Toggle-Stil */
+
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -289,7 +282,6 @@ input:checked + .slider:before {
   height: 100vh;
 }
 
-/* Dark Mode */
 .dark {
   background-color: #1e1e1e;
   color: #fff;
@@ -304,7 +296,6 @@ input:checked + .slider:before {
   background-color: #2c2c2c;
 }
 
-/* Global Styles */
 body.dark {
   background-color: #1e1e1e;
   color: white;
@@ -315,7 +306,6 @@ body.light {
   color: black;
 }
 
-/* Light Mode */
 .light {
   background-color: #f4f4f4;
   color: #333;
@@ -365,13 +355,11 @@ body.light {
   margin: 0;
 }
 
-/* Margin top to avoid overlap with fixed header */
 .dashboard {
   margin-top: 80px;
   padding: 20px;
 }
 
-/* Info-Box */
 .info-box {
   display: flex;
   justify-content: space-between;
@@ -391,7 +379,6 @@ body.light {
   margin: 0;
 }
 
-/* Diagramme */
 .charts {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
