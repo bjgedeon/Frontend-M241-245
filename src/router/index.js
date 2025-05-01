@@ -25,14 +25,13 @@ const router = createRouter({
   routes
 })
 
-// Globaler Navigation Guard
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('auth_token')
   
   if (to.meta.requiresAuth && !token) {
-    next('/login')  // Kein Token vorhanden → Weiterleitung zur Login-Seite
+    next('/login')
   } else {
-    next()  // Weiterleitung erlaubt
+    next()
   }
 })
 
