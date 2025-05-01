@@ -114,13 +114,12 @@ export default {
       </div>
 
       <label class="toggle-switch">
-        <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
-        <span class="slider">
-          <span class="thumb">
-            {{ isDarkMode ? "🌙" : "☀️" }}
-          </span>
-        </span>
-      </label>
+  <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
+  <span class="slider">
+    <span class="icon">{{ isDarkMode ? "🌙" : "☀️" }}</span>
+  </span>
+</label>
+
 
       <label class="client-dropdown">
         <select v-model="selectedClient">
@@ -195,61 +194,31 @@ export default {
 }
 
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
+  position: relative;
+  background-color: white;
   border-radius: 50px;
+  width: 100%;
+  height: 100%;
+  transition: background-color 0.4s ease;
+  overflow: hidden;
 }
 
-.slider .thumb {
+.toggle-switch input:checked + .slider {
+  background-color: black;
+}
+
+.slider .icon {
   position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 22px;
-  width: 22px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  transition: left 0.4s ease, right 0.4s ease, color 0.4s;
   color: black;
-  font-size: 14px;
-  border-radius: 50%;
-  transition: transform 0.4s ease;
-  z-index: 2;
+  left: 8px;
 }
 
-input:checked + .slider {
-  background-color: #4caf50;
-}
 
-input:checked + .slider .thumb {
-  transform: translateX(30px);
-}
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 22px;
-  width: 22px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #4caf50;
-}
-
-input:checked + .slider:before {
-  transform: translateX(30px);
-}
 
 .icon {
   font-size: 18px;
@@ -451,5 +420,4 @@ body.light {
     gap: 15px;
   }
 }
-
 </style>
