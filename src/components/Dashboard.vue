@@ -45,56 +45,77 @@ export default {
       voc: null,
     };
 
+    // Refs zum Speichern der zuletzt gewarnten Werte
+    const lastWarnedValues = {
+      temperature: null,
+      humidity: null,
+      pressure: null,
+      voc: null,
+    };
+
     const checkThresholds = (data) => {
       // Temperatur
-      if (data.temperature < 0 || data.temperature > 35) {
-        if (!toastIds.temperature) {
+      if (data.temperature < 0 || data.temperature > 30) {
+        if (data.temperature !== lastWarnedValues.temperature) {
+          if (toastIds.temperature) toast.dismiss(toastIds.temperature);
           toastIds.temperature = toast.warning(
             `Temperatur ausserhalb des Bereichs: ${data.temperature}°C`,
             { timeout: false }
           );
+          lastWarnedValues.temperature = data.temperature;
         }
       } else if (toastIds.temperature) {
         toast.dismiss(toastIds.temperature);
         toastIds.temperature = null;
+        lastWarnedValues.temperature = null;
       }
 
       // Luftfeuchtigkeit
-      if (data.humidity < 20 || data.humidity > 80) {
-        if (!toastIds.humidity) {
+      if (data.humidity < 30 || data.humidity > 70) {
+        if (data.humidity !== lastWarnedValues.humidity) {
+          if (toastIds.humidity) toast.dismiss(toastIds.humidity);
           toastIds.humidity = toast.warning(
             `Luftfeuchtigkeit ausserhalb des Bereichs: ${data.humidity}%`,
             { timeout: false }
           );
+          lastWarnedValues.humidity = data.humidity;
         }
       } else if (toastIds.humidity) {
         toast.dismiss(toastIds.humidity);
         toastIds.humidity = null;
+        lastWarnedValues.humidity = null;
       }
 
       // Luftdruck
       if (data.pressure < 980 || data.pressure > 1050) {
-        if (!toastIds.pressure) {
+        if (data.pressure !== lastWarnedValues.pressure) {
+          if (toastIds.pressure) toast.dismiss(toastIds.pressure);
           toastIds.pressure = toast.warning(
             `Luftdruck ausserhalb des Bereichs: ${data.pressure} hPa`,
             { timeout: false }
           );
+          lastWarnedValues.pressure = data.pressure;
         }
       } else if (toastIds.pressure) {
         toast.dismiss(toastIds.pressure);
         toastIds.pressure = null;
+        lastWarnedValues.pressure = null;
       }
 
-      // Luftqualität (VOC)
-      if (data.voc > 200) {
-        if (!toastIds.voc) {
-          toastIds.voc = toast.error(`Luftqualität kritisch: VOC ${data.voc}`, {
-            timeout: false,
-          });
+      // Luftqualität
+      if (data.vocIndex > 200) {
+        if (data.vocIndex !== lastWarnedValues.vocIndex) {
+          if (toastIds.vocIndex) toast.dismiss(toastIds.vocIndex);
+          toastIds.vocIndex = toast.warning(
+            `Luftqualität schlecht: VOC-Index ${data.vocIndex}`,
+            { timeout: false }
+          );
+          lastWarnedValues.vocIndex = data.vocIndex;
         }
-      } else if (toastIds.voc) {
-        toast.dismiss(toastIds.voc);
-        toastIds.voc = null;
+      } else if (toastIds.vocIndex) {
+        toast.dismiss(toastIds.vocIndex);
+        toastIds.vocIndex = null;
+        lastWarnedValues.vocIndex = null;
       }
     };
 
@@ -113,28 +134,24 @@ export default {
 
         // Zeitumwandlung: UTC auf Schweizer Zeit (UTC+2)
         const localTime = new Date(latest.timestamp);
-        localTime.setHours(localTime.getHours() + 2); // +2 Stunden für die Schweizer Zeit (UTC+2)
-        formattedTime.value = localTime.toLocaleTimeString(); // Umformatieren der Zeit in eine lesbare Form
+        localTime.setHours(localTime.getHours() + 2);
+        formattedTime.value = localTime.toLocaleTimeString();
 
-        // Temperaturdaten mit der umgewandelten Zeit
         temperatureData.value.push({
           time: formattedTime.value,
           temperature: latest.temperature,
         });
 
-        // Humiditydaten
         humidityData.value.push({
           time: formattedTime.value,
           humidity: latest.humidity,
         });
 
-        // Luftdruckdaten
         airPressureData.value.push({
           time: formattedTime.value,
           pressure: latest.pressure,
         });
 
-        // Luftqualitätsdaten
         airQualityData.value.push({
           time: formattedTime.value,
           airQuality: latest.voc,
