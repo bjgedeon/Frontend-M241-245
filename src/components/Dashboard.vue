@@ -6,6 +6,7 @@ import TemperatureChart from "./Charts/TemperatureChart.vue";
 import HumidityChart from "./Charts/HumidityChart.vue";
 import AirQualityChart from "./Charts/AirQualityChart.vue";
 import AirPressureChart from "./Charts/AirPressureChart.vue";
+import Footer from "./Footer.vue";
 
 export default {
   components: {
@@ -13,6 +14,7 @@ export default {
     HumidityChart,
     AirQualityChart,
     AirPressureChart,
+    Footer,
   },
 
   setup() {
@@ -283,6 +285,8 @@ export default {
       </div>
     </div>
   </div>
+  <Footer :isDarkMode="isDarkMode" />
+
 </template>
 
 <style>
