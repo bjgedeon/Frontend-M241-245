@@ -1,69 +1,57 @@
 <template>
-    <div class="chart-container">
-      <apexchart type="line" :options="chartOptions" :series="series" />
-    </div>
-  </template>
-  
-  <script>
-  import { defineComponent, computed } from "vue";
-  import VueApexCharts from "vue3-apexcharts";
-  
-  export default defineComponent({
-    components: {
-      apexchart: VueApexCharts,
+  <div class="chart-container">
+    <apexchart type="line" :options="chartOptions" :series="series" />
+  </div>
+</template>
+
+<script>
+import { defineComponent, computed } from "vue";
+import VueApexCharts from "vue3-apexcharts";
+
+export default defineComponent({
+  components: {
+    apexchart: VueApexCharts,
+  },
+  props: {
+    data: {
+      type: Array,
+      required: true,
     },
-    props: {
-      data: {
-        type: Array,
-        required: true,
+    isDark: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  setup(props) {
+    const series = computed(() => [
+      {
+        name: "Luftdruck",
+        data: props.data.map((item) => item.pressure),
       },
-    },
-    setup(props) {
-      const series = computed(() => [
-        {
-          name: "Luftdruck",
-          data: props.data.map((item) => item.airPressure),
-        },
-      ]);
-  
-      const chartOptions = computed(() => ({
+    ]);
+
+    const chartOptions = computed(() => {
+      const textColor = props.isDark ? "#ffffff" : "#333333";
+      const axisLabelColor = props.isDark ? "#cccccc" : "#444444";
+
+      return {
         chart: {
           type: "line",
           zoom: { enabled: false },
           toolbar: { show: false },
           animations: { enabled: true },
-          foreColor: "#ccc",
+          foreColor: textColor,
           height: "100%",
           width: "100%",
         },
         title: {
-          text: "Luftqualität",
+          text: "Luftdruck",
           align: "center",
           style: {
             fontSize: "16px",
-            color: "#ffffff",
+            color: textColor,
           },
         },
-        responsive: [
-          {
-            breakpoint: 768,
-            options: {
-              chart: { height: 250 },
-              xaxis: {
-                labels: { show: true, rotate: -45, style: { fontSize: "10px" } },
-              },
-              yaxis: { labels: { style: { fontSize: "10px" } } },
-            },
-          },
-          {
-            breakpoint: 480,
-            options: {
-              chart: { height: 200 },
-              xaxis: { labels: { rotate: -45, style: { fontSize: "9px" } } },
-              yaxis: { labels: { style: { fontSize: "9px" } } },
-            },
-          },
-        ],
         stroke: { curve: "smooth" },
         xaxis: {
           categories: props.data.map((item) => item.time),
@@ -71,43 +59,85 @@
             text: "Zeit (vor wie lange)",
             style: {
               fontSize: "12px",
-              color: "#ffffff",
+              color: textColor,
             },
           },
-          labels: { style: { fontSize: "12px" } },
+          labels: {
+            style: {
+              fontSize: "12px",
+              color: axisLabelColor,
+            },
+          },
         },
         yaxis: {
           title: {
-            text: "Temperatur (°C)",
+            text: "Luftdruck (hPa)",
             style: {
               fontSize: "12px",
-              color: "#ffffff",
+              color: textColor,
             },
           },
-          labels: { style: { fontSize: "12px" } },
+          labels: {
+            style: {
+              fontSize: "12px",
+              color: axisLabelColor,
+            },
+          },
         },
         colors: ["#007bff"],
-      }));
-  
-      return {
-        series,
-        chartOptions,
+        responsive: [
+          {
+            breakpoint: 768,
+            options: {
+              chart: { height: 250 },
+              xaxis: {
+                labels: {
+                  rotate: -45,
+                  style: { fontSize: "10px", color: axisLabelColor },
+                },
+              },
+              yaxis: {
+                labels: { style: { fontSize: "10px", color: axisLabelColor } },
+              },
+            },
+          },
+          {
+            breakpoint: 480,
+            options: {
+              chart: { height: 200 },
+              xaxis: {
+                labels: {
+                  rotate: -45,
+                  style: { fontSize: "9px", color: axisLabelColor },
+                },
+              },
+              yaxis: {
+                labels: { style: { fontSize: "9px", color: axisLabelColor } },
+              },
+            },
+          },
+        ],
       };
-    },
-  });
-  </script>
-  
-  <style scoped>
+    });
+
+    return {
+      series,
+      chartOptions,
+    };
+  },
+});
+</script>
+
+<style scoped>
+.chart-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
   .chart-container {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
+    padding: 10px 0;
   }
-  
-  @media (max-width: 768px) {
-    .chart-container {
-      padding: 10px 0;
-    }
-  }
-  </style>
-  
+}
+</style>

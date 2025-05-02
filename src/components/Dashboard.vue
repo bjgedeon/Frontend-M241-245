@@ -173,16 +173,16 @@ export default {
 
     <div class="charts">
       <div class="chart">
-        <TemperatureChart :data="temperatureData" />
+        <TemperatureChart :data="temperatureData" :is-dark="isDarkMode" />
       </div>
       <div class="chart">
-        <HumidityChart :data="humidityData" />
+        <HumidityChart :data="humidityData" :is-dark="isDarkMode" />
       </div>
       <div class="chart">
-        <AirQualityChart :data="airQualityData" />
+        <AirQualityChart :data="airQualityData" :is-dark="isDarkMode" />
       </div>
       <div class="chart">
-        <AirPressureChart :data="airPressureData" />
+        <AirPressureChart :data="airPressureData" :is-dark="isDarkMode" />
       </div>
     </div>
   </div>
@@ -377,6 +377,7 @@ body.light {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 20px;
+  font-family: sans-serif;
 }
 
 @media (max-width: 1024px) {
