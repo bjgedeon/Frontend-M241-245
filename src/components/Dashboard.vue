@@ -209,7 +209,7 @@ export default {
             alt="Temperatur"
             class="info-icon"
           />
-          <p>Temperatur: {{ latestData.temperature }}°C</p>
+          <p>Temperatur: {{ latestData.temperature.toFixed(1) }}°C</p>
         </div>
       </div>
 
@@ -251,10 +251,10 @@ export default {
         <HumidityChart :data="humidityData" :is-dark="isDarkMode" />
       </div>
       <div class="chart">
-        <AirQualityChart :data="airQualityData" :is-dark="isDarkMode" />
+        <AirPressureChart :data="airPressureData" :is-dark="isDarkMode" />
       </div>
       <div class="chart">
-        <AirPressureChart :data="airPressureData" :is-dark="isDarkMode" />
+        <AirQualityChart :data="airQualityData" :is-dark="isDarkMode" />
       </div>
     </div>
   </div>

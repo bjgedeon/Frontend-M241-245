@@ -84,7 +84,7 @@ export default defineComponent({
             },
           },
         },
-        colors: ["#007bff"],
+        colors: ["#fff700"],
         responsive: [
           {
             breakpoint: 768,
