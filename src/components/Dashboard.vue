@@ -203,7 +203,11 @@ export default {
   <br />
   <div class="dashboard">
     <div class="header">
-      <img src="/logo.png" alt="Dashboard Logo" class="logo" />
+      <img
+        :src="isDarkMode ? '/logo-weiss.png' : '/logo-schwarz.png'"
+        alt="Dashboard Logo"
+        class="logo"
+      />
       <div class="header-center">
         <h1>BBZW Sursee</h1>
         <p>{{ formattedTime }}</p>
@@ -286,7 +290,6 @@ export default {
     </div>
   </div>
   <Footer :isDarkMode="isDarkMode" />
-
 </template>
 
 <style>
