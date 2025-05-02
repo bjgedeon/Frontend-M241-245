@@ -1,5 +1,7 @@
 const API_BASE_URL = 'http://bbzw-horizon.duckdns.org:8080'; 
 
+let lastTimestamp = false;
+
 export async function generateToken(username, password) {
 
   try {
@@ -35,8 +37,21 @@ export async function generateToken(username, password) {
 export const fetchData = async (client, token) => {
   try {
     const currentDate = new Date();
-    const startDate = new Date(currentDate);
-    startDate.setDate(currentDate.getDate() - 1);
+
+    let startDate;
+
+    if (!lastTimestamp) {
+      startDate = new Date(currentDate);
+      startDate.setDate(currentDate.getDate() - 1);
+      startDate.setHours(startDate.getHours() + 2);
+      console.log("Erster Abruf – Zeitraum: letzte 24 Stunden (+2h Offset)");
+      lastTimestamp = true;
+    } else {
+      startDate = new Date(lastTimestamp);
+      startDate.setSeconds(startDate.getSeconds() - 10);
+      startDate.setHours(startDate.getHours() + 2);
+      console.log("Folgeabruf – Zeitraum seit letztem Timestamp (+2h Offset):", startDate.toISOString());
+    }
 
     const url = `${API_BASE_URL}/sensors/get-data?client=${client}&start_date=${startDate.toISOString()}&end_date=${currentDate.toISOString()}`;
 
@@ -60,7 +75,14 @@ export const fetchData = async (client, token) => {
     }
 
     const data = await response.json();
-    console.log("Response Data:", data); // <--- Hier wird die Response angezeigt
+
+    console.log("Response Data:", data);
+
+    if (data.length > 0) {
+      const newest = data[data.length - 1];
+      lastTimestamp = new Date(newest.timestamp || newest.time || newest.date);
+      console.log("Neuer letzter Timestamp:", lastTimestamp);
+    }
 
     return data;
   } catch (error) {
@@ -68,6 +90,7 @@ export const fetchData = async (client, token) => {
     throw error;
   }
 };
+
 
 
 
