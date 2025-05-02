@@ -182,7 +182,7 @@ export default {
     <div class="header">
       <img src="/logo.png" alt="Dashboard Logo" class="logo" />
       <div class="header-center">
-        <h1>Luzern</h1>
+        <h1>BBZW Sursee</h1>
         <p>{{ formattedTime }}</p>
       </div>
 
@@ -209,7 +209,7 @@ export default {
             alt="Temperatur"
             class="info-icon"
           />
-          <p>Temperatur: {{ latestData.temperature.toFixed(1) }}°C</p>
+          <p>Temperatur: {{ latestData?.temperature?.toFixed(1) || 'N/A' }}°C</p>
         </div>
       </div>
 
