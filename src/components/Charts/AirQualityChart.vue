@@ -17,6 +17,10 @@ export default defineComponent({
       type: Array,
       required: true,
     },
+    isDark: {
+      type: Boolean,
+      required: true,
+    },
   },
   setup(props) {
     const series = computed(() => [
@@ -26,68 +30,95 @@ export default defineComponent({
       },
     ]);
 
-    const chartOptions = computed(() => ({
-      chart: {
-        type: "line",
-        zoom: { enabled: false },
-        toolbar: { show: false },
-        animations: { enabled: true },
-        foreColor: "#ccc",
-        height: "100%",
-        width: "100%",
-      },
-      title: {
-        text: "Luftqualität",
-        align: "center",
-        style: {
-          fontSize: "16px",
-          color: "#ffffff",
+    const chartOptions = computed(() => {
+      const textColor = props.isDark ? "#ffffff" : "#333333";
+      const axisLabelColor = props.isDark ? "#cccccc" : "#444444";
+
+      return {
+        chart: {
+          type: "line",
+          zoom: { enabled: false },
+          toolbar: { show: false },
+          animations: { enabled: true },
+          foreColor: textColor,
+          height: "100%",
+          width: "100%",
         },
-      },
-      responsive: [
-        {
-          breakpoint: 768,
-          options: {
-            chart: { height: 250 },
-            xaxis: {
-              labels: { show: true, rotate: -45, style: { fontSize: "10px" } },
+        title: {
+          text: "Luftqualität",
+          align: "center",
+          style: {
+            fontSize: "16px",
+            color: textColor,
+          },
+        },
+        stroke: { curve: "smooth" },
+        xaxis: {
+          categories: props.data.map((item) => item.time),
+          title: {
+            text: "Zeit (vor wie lange)",
+            style: {
+              fontSize: "12px",
+              color: textColor,
             },
-            yaxis: { labels: { style: { fontSize: "10px" } } },
+          },
+          labels: {
+            style: {
+              fontSize: "12px",
+              color: axisLabelColor,
+            },
           },
         },
-        {
-          breakpoint: 480,
-          options: {
-            chart: { height: 200 },
-            xaxis: { labels: { rotate: -45, style: { fontSize: "9px" } } },
-            yaxis: { labels: { style: { fontSize: "9px" } } },
+        yaxis: {
+          title: {
+            text: "Luftqualität (Index)",
+            style: {
+              fontSize: "12px",
+              color: textColor,
+            },
+          },
+          labels: {
+            style: {
+              fontSize: "12px",
+              color: axisLabelColor,
+            },
           },
         },
-      ],
-      stroke: { curve: "smooth" },
-      xaxis: {
-        categories: props.data.map((item) => item.time),
-        title: {
-          text: "Zeit (vor wie lange)",
-          style: {
-            fontSize: "12px",
-            color: "#ffffff",
+        colors: ["#007bff"],
+        responsive: [
+          {
+            breakpoint: 768,
+            options: {
+              chart: { height: 250 },
+              xaxis: {
+                labels: {
+                  rotate: -45,
+                  style: { fontSize: "10px", color: axisLabelColor },
+                },
+              },
+              yaxis: {
+                labels: { style: { fontSize: "10px", color: axisLabelColor } },
+              },
+            },
           },
-        },
-        labels: { style: { fontSize: "12px" } },
-      },
-      yaxis: {
-        title: {
-          text: "Temperatur (°C)",
-          style: {
-            fontSize: "12px",
-            color: "#ffffff",
+          {
+            breakpoint: 480,
+            options: {
+              chart: { height: 200 },
+              xaxis: {
+                labels: {
+                  rotate: -45,
+                  style: { fontSize: "9px", color: axisLabelColor },
+                },
+              },
+              yaxis: {
+                labels: { style: { fontSize: "9px", color: axisLabelColor } },
+              },
+            },
           },
-        },
-        labels: { style: { fontSize: "12px" } },
-      },
-      colors: ["#007bff"],
-    }));
+        ],
+      };
+    });
 
     return {
       series,
