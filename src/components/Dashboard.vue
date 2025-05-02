@@ -37,21 +37,64 @@ export default {
       return `/images/${type}-${isDarkMode.value ? "dark" : "light"}mode.png`;
     };
 
+    // Neue Refs zum Speichern aktiver Toast-IDs
+    const toastIds = {
+      temperature: null,
+      humidity: null,
+      pressure: null,
+      voc: null,
+    };
+
     const checkThresholds = (data) => {
+      // Temperatur
       if (data.temperature < 0 || data.temperature > 35) {
-        toast.warning(`Temperatur außerhalb des Bereichs: ${data.temperature}°C`);
+        if (!toastIds.temperature) {
+          toastIds.temperature = toast.warning(
+            `Temperatur außerhalb des Bereichs: ${data.temperature}°C`,
+            { timeout: false }
+          );
+        }
+      } else if (toastIds.temperature) {
+        toast.dismiss(toastIds.temperature);
+        toastIds.temperature = null;
       }
 
+      // Luftfeuchtigkeit
       if (data.humidity < 20 || data.humidity > 80) {
-        toast.warning(`Luftfeuchtigkeit außerhalb des Bereichs: ${data.humidity}%`);
+        if (!toastIds.humidity) {
+          toastIds.humidity = toast.warning(
+            `Luftfeuchtigkeit außerhalb des Bereichs: ${data.humidity}%`,
+            { timeout: false }
+          );
+        }
+      } else if (toastIds.humidity) {
+        toast.dismiss(toastIds.humidity);
+        toastIds.humidity = null;
       }
 
+      // Luftdruck
       if (data.pressure < 980 || data.pressure > 1050) {
-        toast.warning(`Luftdruck außerhalb des Bereichs: ${data.pressure} hPa`);
+        if (!toastIds.pressure) {
+          toastIds.pressure = toast.warning(
+            `Luftdruck außerhalb des Bereichs: ${data.pressure} hPa`,
+            { timeout: false }
+          );
+        }
+      } else if (toastIds.pressure) {
+        toast.dismiss(toastIds.pressure);
+        toastIds.pressure = null;
       }
 
+      // Luftqualität (VOC)
       if (data.voc > 200) {
-        toast.error(`Luftqualität kritisch: VOC ${data.voc}`);
+        if (!toastIds.voc) {
+          toastIds.voc = toast.error(`Luftqualität kritisch: VOC ${data.voc}`, {
+            timeout: false,
+          });
+        }
+      } else if (toastIds.voc) {
+        toast.dismiss(toastIds.voc);
+        toastIds.voc = null;
       }
     };
 
@@ -161,14 +204,22 @@ export default {
     <div class="info-grid">
       <div class="info-box">
         <div>
-          <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
+          <img
+            :src="getIcon('temperatur')"
+            alt="Temperatur"
+            class="info-icon"
+          />
           <p>Temperatur: {{ latestData.temperature }}°C</p>
         </div>
       </div>
 
       <div class="info-box">
         <div>
-          <img :src="getIcon('luftfeuchtigkeit')" alt="Luftfeuchtigkeit" class="info-icon" />
+          <img
+            :src="getIcon('luftfeuchtigkeit')"
+            alt="Luftfeuchtigkeit"
+            class="info-icon"
+          />
           <p>Luftfeuchtigkeit: {{ latestData.humidity }}%</p>
         </div>
       </div>
@@ -182,7 +233,11 @@ export default {
 
       <div class="info-box">
         <div>
-          <img :src="getIcon('luftqualitaet')" alt="Luftqualität" class="info-icon" />
+          <img
+            :src="getIcon('luftqualitaet')"
+            alt="Luftqualität"
+            class="info-icon"
+          />
           <p>Luftqualität: {{ latestData.airQuality }}</p>
         </div>
       </div>
