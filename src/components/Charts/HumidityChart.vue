@@ -42,7 +42,7 @@ export default defineComponent({
           animations: { enabled: true },
           foreColor: textColor,
           height: "100%",
-          width: "100%",
+          // width entfernt für responsives Verhalten
         },
         title: {
           text: "Luftfeuchtigkeit",
@@ -55,6 +55,7 @@ export default defineComponent({
         stroke: { curve: "smooth" },
         xaxis: {
           categories: props.data.map((item) => item.time),
+          tickAmount: 10, // Dynamische Skalierung auf 10
           title: {
             text: "Zeit (vor wie lange)",
             style: {
@@ -91,6 +92,7 @@ export default defineComponent({
             options: {
               chart: { height: 250 },
               xaxis: {
+                tickAmount: 5,
                 labels: {
                   rotate: -45,
                   style: { fontSize: "10px", color: axisLabelColor },
@@ -106,6 +108,7 @@ export default defineComponent({
             options: {
               chart: { height: 200 },
               xaxis: {
+                tickAmount: 3,
                 labels: {
                   rotate: -45,
                   style: { fontSize: "9px", color: axisLabelColor },
@@ -131,13 +134,7 @@ export default defineComponent({
 <style scoped>
 .chart-container {
   width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-@media (max-width: 768px) {
-  .chart-container {
-    padding: 10px 0;
-  }
+  max-width: 800px;
+  margin: 0 auto;
 }
 </style>

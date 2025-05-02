@@ -153,11 +153,11 @@ export default {
       setInterval(() => {
         formattedTime.value = new Date().toLocaleTimeString();
         getData();
-      }, 1000);
+      }, 5000);
 
       setInterval(() => {
         updateCharts();
-      }, 300000);
+      }, 5000);
     });
 
     return {
