@@ -1,5 +1,6 @@
 <script>
 import { ref, onMounted } from "vue";
+import { useToast } from "vue-toastification";
 import { fetchData } from "../api.js";
 import TemperatureChart from "./Charts/TemperatureChart.vue";
 import HumidityChart from "./Charts/HumidityChart.vue";
@@ -7,9 +8,16 @@ import AirQualityChart from "./Charts/AirQualityChart.vue";
 import AirPressureChart from "./Charts/AirPressureChart.vue";
 
 export default {
-  components: { TemperatureChart, HumidityChart, AirQualityChart, AirPressureChart },
+  components: {
+    TemperatureChart,
+    HumidityChart,
+    AirQualityChart,
+    AirPressureChart,
+  },
 
   setup() {
+    const toast = useToast();
+
     const temperatureData = ref([]);
     const humidityData = ref([]);
     const airPressureData = ref([]);
@@ -29,6 +37,24 @@ export default {
       return `/images/${type}-${isDarkMode.value ? "dark" : "light"}mode.png`;
     };
 
+    const checkThresholds = (data) => {
+      if (data.temperature < 0 || data.temperature > 35) {
+        toast.warning(`Temperatur außerhalb des Bereichs: ${data.temperature}°C`);
+      }
+
+      if (data.humidity < 20 || data.humidity > 80) {
+        toast.warning(`Luftfeuchtigkeit außerhalb des Bereichs: ${data.humidity}%`);
+      }
+
+      if (data.pressure < 980 || data.pressure > 1050) {
+        toast.warning(`Luftdruck außerhalb des Bereichs: ${data.pressure} hPa`);
+      }
+
+      if (data.voc > 200) {
+        toast.error(`Luftqualität kritisch: VOC ${data.voc}`);
+      }
+    };
+
     const getData = async () => {
       try {
         const token = localStorage.getItem("auth_token");
@@ -36,7 +62,7 @@ export default {
           throw new Error("Kein Token im Speicher gefunden");
         }
 
-        const data = await fetchData(selectedClient.value, token);
+        const data = await fetchData(1.54, token);
         if (!data || data.length === 0) return;
 
         const latest = data[data.length - 1];
@@ -62,8 +88,11 @@ export default {
           time: formattedTime.value,
           airQuality: latest.voc,
         });
+
+        checkThresholds(latest);
       } catch (error) {
         console.error("Fehler beim Abrufen der Daten:", error);
+        toast.error("Fehler beim Abrufen der Daten");
       }
     };
 
@@ -96,9 +125,9 @@ export default {
       airQualityData,
       airPressureData,
       toggleTheme,
-      getIcon,
       isDarkMode,
       selectedClient,
+      getIcon,
     };
   },
 };
@@ -132,22 +161,14 @@ export default {
     <div class="info-grid">
       <div class="info-box">
         <div>
-          <img
-            :src="getIcon('temperatur')"
-            alt="Temperatur"
-            class="info-icon"
-          />
+          <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
           <p>Temperatur: {{ latestData.temperature }}°C</p>
         </div>
       </div>
 
       <div class="info-box">
         <div>
-          <img
-            :src="getIcon('luftfeuchtigkeit')"
-            alt="Luftfeuchtigkeit"
-            class="info-icon"
-          />
+          <img :src="getIcon('luftfeuchtigkeit')" alt="Luftfeuchtigkeit" class="info-icon" />
           <p>Luftfeuchtigkeit: {{ latestData.humidity }}%</p>
         </div>
       </div>
@@ -161,11 +182,7 @@ export default {
 
       <div class="info-box">
         <div>
-          <img
-            :src="getIcon('luftqualitaet')"
-            alt="Luftqualität"
-            class="info-icon"
-          />
+          <img :src="getIcon('luftqualitaet')" alt="Luftqualität" class="info-icon" />
           <p>Luftqualität: {{ latestData.airQuality }}</p>
         </div>
       </div>
