@@ -75,7 +75,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 5px;
 }
 
 .logo {
