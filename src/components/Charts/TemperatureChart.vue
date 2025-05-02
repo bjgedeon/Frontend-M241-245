@@ -57,7 +57,7 @@ export default defineComponent({
           categories: props.data.map((item) => item.time),
           tickAmount: 10, // X-Achsen-Skalierung anpassen
           title: {
-            text: "Zeit (vor wie lange)",
+            text: "Uhrzeit",
             style: {
               fontSize: "12px",
               color: textColor,
@@ -99,6 +99,13 @@ export default defineComponent({
                 },
               },
               yaxis: {
+                title: {
+                  text: "Temperatur (°C)",
+                  style: {
+                    fontSize: "10px",
+                    color: textColor,
+                  },
+                },
                 labels: { style: { fontSize: "10px", color: axisLabelColor } },
               },
             },
@@ -115,6 +122,13 @@ export default defineComponent({
                 },
               },
               yaxis: {
+                title: {
+                  text: "Temperatur (°C)",
+                  style: {
+                    fontSize: "9px",
+                    color: textColor,
+                  },
+                },
                 labels: { style: { fontSize: "9px", color: axisLabelColor } },
               },
             },

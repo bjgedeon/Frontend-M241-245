@@ -56,7 +56,7 @@ export default defineComponent({
           categories: props.data.map((item) => item.time),
           tickAmount: 10, // Steuert die X-Achsen-Skalierung
           title: {
-            text: "Zeit (vor wie lange)",
+            text: "Uhrzeit",
             style: {
               fontSize: "12px",
               color: textColor,
@@ -98,6 +98,13 @@ export default defineComponent({
                 },
               },
               yaxis: {
+                title: {
+                  text: "Luftdruck (hPa)", // Y-Achsentitel explizit setzen
+                  style: {
+                    fontSize: "10px",
+                    color: textColor,
+                  },
+                },
                 labels: { style: { fontSize: "10px", color: axisLabelColor } },
               },
             },
@@ -114,6 +121,13 @@ export default defineComponent({
                 },
               },
               yaxis: {
+                title: {
+                  text: "Luftdruck (hPa)", // Auch hier setzen
+                  style: {
+                    fontSize: "9px",
+                    color: textColor,
+                  },
+                },
                 labels: { style: { fontSize: "9px", color: axisLabelColor } },
               },
             },
