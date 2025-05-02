@@ -466,12 +466,37 @@ body.light {
 }
 
 .client-dropdown select {
-  padding: 10px;
-  margin-left: 10px;
+  padding: 10px 14px;
   font-size: 16px;
-  border-radius: 5px;
-  background-color: #fff;
+  border-radius: 8px;
+  background-color: var(--dropdown-bg, #fff);
+  color: var(--dropdown-text, #000);
   border: 1px solid #ccc;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+/* Pfeil entfernen und durch eigenen ersetzen */
+
+.client-dropdown::after {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #666;
+}
+
+body.dark .client-dropdown select {
+  background-color: #444;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+body.dark .client-dropdown::after {
+  color: #aaa;
 }
 
 .info-grid {
