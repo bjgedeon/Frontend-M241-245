@@ -1,5 +1,6 @@
 <script>
 import { ref, onMounted } from "vue";
+import { useToast } from "vue-toastification";
 import { fetchData } from "../api.js";
 import TemperatureChart from "./Charts/TemperatureChart.vue";
 import HumidityChart from "./Charts/HumidityChart.vue";
@@ -7,9 +8,16 @@ import AirQualityChart from "./Charts/AirQualityChart.vue";
 import AirPressureChart from "./Charts/AirPressureChart.vue";
 
 export default {
-  components: { TemperatureChart, HumidityChart, AirQualityChart, AirPressureChart },
+  components: {
+    TemperatureChart,
+    HumidityChart,
+    AirQualityChart,
+    AirPressureChart,
+  },
 
   setup() {
+    const toast = useToast();
+
     const temperatureData = ref([]);
     const humidityData = ref([]);
     const airPressureData = ref([]);
@@ -29,6 +37,67 @@ export default {
       return `/images/${type}-${isDarkMode.value ? "dark" : "light"}mode.png`;
     };
 
+    // Neue Refs zum Speichern aktiver Toast-IDs
+    const toastIds = {
+      temperature: null,
+      humidity: null,
+      pressure: null,
+      voc: null,
+    };
+
+    const checkThresholds = (data) => {
+      // Temperatur
+      if (data.temperature < 0 || data.temperature > 35) {
+        if (!toastIds.temperature) {
+          toastIds.temperature = toast.warning(
+            `Temperatur außerhalb des Bereichs: ${data.temperature}°C`,
+            { timeout: false }
+          );
+        }
+      } else if (toastIds.temperature) {
+        toast.dismiss(toastIds.temperature);
+        toastIds.temperature = null;
+      }
+
+      // Luftfeuchtigkeit
+      if (data.humidity < 20 || data.humidity > 80) {
+        if (!toastIds.humidity) {
+          toastIds.humidity = toast.warning(
+            `Luftfeuchtigkeit außerhalb des Bereichs: ${data.humidity}%`,
+            { timeout: false }
+          );
+        }
+      } else if (toastIds.humidity) {
+        toast.dismiss(toastIds.humidity);
+        toastIds.humidity = null;
+      }
+
+      // Luftdruck
+      if (data.pressure < 980 || data.pressure > 1050) {
+        if (!toastIds.pressure) {
+          toastIds.pressure = toast.warning(
+            `Luftdruck außerhalb des Bereichs: ${data.pressure} hPa`,
+            { timeout: false }
+          );
+        }
+      } else if (toastIds.pressure) {
+        toast.dismiss(toastIds.pressure);
+        toastIds.pressure = null;
+      }
+
+      // Luftqualität (VOC)
+      if (data.voc > 200) {
+        if (!toastIds.voc) {
+          toastIds.voc = toast.error(`Luftqualität kritisch: VOC ${data.voc}`, {
+            timeout: false,
+          });
+        }
+      } else if (toastIds.voc) {
+        toast.dismiss(toastIds.voc);
+        toastIds.voc = null;
+      }
+    };
+
     const getData = async () => {
       try {
         const token = localStorage.getItem("auth_token");
@@ -36,7 +105,7 @@ export default {
           throw new Error("Kein Token im Speicher gefunden");
         }
 
-        const data = await fetchData(selectedClient.value, token);
+        const data = await fetchData(1.54, token);
         if (!data || data.length === 0) return;
 
         const latest = data[data.length - 1];
@@ -62,8 +131,11 @@ export default {
           time: formattedTime.value,
           airQuality: latest.voc,
         });
+
+        checkThresholds(latest);
       } catch (error) {
         console.error("Fehler beim Abrufen der Daten:", error);
+        toast.error("Fehler beim Abrufen der Daten");
       }
     };
 
@@ -81,11 +153,11 @@ export default {
       setInterval(() => {
         formattedTime.value = new Date().toLocaleTimeString();
         getData();
-      }, 1000);
+      }, 5000);
 
       setInterval(() => {
         updateCharts();
-      }, 300000);
+      }, 5000);
     });
 
     return {
@@ -96,9 +168,9 @@ export default {
       airQualityData,
       airPressureData,
       toggleTheme,
-      getIcon,
       isDarkMode,
       selectedClient,
+      getIcon,
     };
   },
 };
