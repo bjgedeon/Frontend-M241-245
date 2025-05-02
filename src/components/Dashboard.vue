@@ -50,7 +50,7 @@ export default {
       if (data.temperature < 0 || data.temperature > 35) {
         if (!toastIds.temperature) {
           toastIds.temperature = toast.warning(
-            `Temperatur außerhalb des Bereichs: ${data.temperature}°C`,
+            `Temperatur ausserhalb des Bereichs: ${data.temperature}°C`,
             { timeout: false }
           );
         }
@@ -63,7 +63,7 @@ export default {
       if (data.humidity < 20 || data.humidity > 80) {
         if (!toastIds.humidity) {
           toastIds.humidity = toast.warning(
-            `Luftfeuchtigkeit außerhalb des Bereichs: ${data.humidity}%`,
+            `Luftfeuchtigkeit ausserhalb des Bereichs: ${data.humidity}%`,
             { timeout: false }
           );
         }
@@ -76,7 +76,7 @@ export default {
       if (data.pressure < 980 || data.pressure > 1050) {
         if (!toastIds.pressure) {
           toastIds.pressure = toast.warning(
-            `Luftdruck außerhalb des Bereichs: ${data.pressure} hPa`,
+            `Luftdruck ausserhalb des Bereichs: ${data.pressure} hPa`,
             { timeout: false }
           );
         }
