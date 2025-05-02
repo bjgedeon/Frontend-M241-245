@@ -1,5 +1,5 @@
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useToast } from "vue-toastification";
 import { fetchData } from "../api.js";
 import TemperatureChart from "./Charts/TemperatureChart.vue";
@@ -25,7 +25,7 @@ export default {
     const latestData = ref({});
     const formattedTime = ref(new Date().toLocaleTimeString());
     const isDarkMode = ref(true);
-    const selectedClient = ref("client1");
+    const selectedClient = ref(1.54);
 
     const toggleTheme = () => {
       const newTheme = isDarkMode.value ? "dark" : "light";
@@ -118,7 +118,7 @@ export default {
         const token = localStorage.getItem("auth_token");
         if (!token) throw new Error("Kein Token im Speicher gefunden");
 
-        const data = await fetchData(1.54, token);
+        const data = await fetchData(parseFloat(selectedClient.value), token);
         if (!data || data.length === 0) return;
 
         const latest = data[data.length - 1];
@@ -177,6 +177,10 @@ export default {
       }, 5000);
     });
 
+    watch(selectedClient, () => {
+      getData();
+    });
+
     return {
       latestData,
       formattedTime,
@@ -212,8 +216,8 @@ export default {
 
       <label class="client-dropdown">
         <select v-model="selectedClient">
-          <option value="client1">Client 1</option>
-          <option value="client2">Client 2</option>
+          <option :value="1.54">1.54</option>
+          <option :value="1.61">1.61</option>
         </select>
       </label>
     </div>
@@ -221,15 +225,27 @@ export default {
     <div class="info-grid">
       <div class="info-box">
         <div>
-          <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
-          <p>Temperatur: {{ latestData?.temperature?.toFixed(1) || "N/A" }}°C</p>
+          <img
+            :src="getIcon('temperatur')"
+            alt="Temperatur"
+            class="info-icon"
+          />
+          <p>
+            Temperatur: {{ latestData?.temperature?.toFixed(1) || "N/A" }}°C
+          </p>
         </div>
       </div>
 
       <div class="info-box">
         <div>
-          <img :src="getIcon('luftfeuchtigkeit')" alt="Luftfeuchtigkeit" class="info-icon" />
-          <p>Luftfeuchtigkeit: {{ latestData.humidity?.toFixed(1) || "N/A" }}%</p>
+          <img
+            :src="getIcon('luftfeuchtigkeit')"
+            alt="Luftfeuchtigkeit"
+            class="info-icon"
+          />
+          <p>
+            Luftfeuchtigkeit: {{ latestData.humidity?.toFixed(1) || "N/A" }}%
+          </p>
         </div>
       </div>
 
@@ -242,7 +258,11 @@ export default {
 
       <div class="info-box">
         <div>
-          <img :src="getIcon('luftqualitaet')" alt="Luftqualität" class="info-icon" />
+          <img
+            :src="getIcon('luftqualitaet')"
+            alt="Luftqualität"
+            class="info-icon"
+          />
           <p>Luftqualität: {{ latestData.airQuality?.toFixed(1) || "N/A" }}</p>
         </div>
       </div>
