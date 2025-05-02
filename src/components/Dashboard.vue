@@ -110,23 +110,31 @@ export default {
 
         const latest = data[data.length - 1];
         latestData.value = latest;
-        formattedTime.value = new Date(latest.timestamp).toLocaleTimeString();
 
+        // Zeitumwandlung: UTC auf Schweizer Zeit (UTC+2)
+        const localTime = new Date(latest.timestamp);
+        localTime.setHours(localTime.getHours() + 2); // +2 Stunden für die Schweizer Zeit (UTC+2)
+        formattedTime.value = localTime.toLocaleTimeString(); // Umformatieren der Zeit in eine lesbare Form
+
+        // Temperaturdaten mit der umgewandelten Zeit
         temperatureData.value.push({
           time: formattedTime.value,
           temperature: latest.temperature,
         });
 
+        // Humiditydaten
         humidityData.value.push({
           time: formattedTime.value,
           humidity: latest.humidity,
         });
 
+        // Luftdruckdaten
         airPressureData.value.push({
           time: formattedTime.value,
           pressure: latest.pressure,
         });
 
+        // Luftqualitätsdaten
         airQualityData.value.push({
           time: formattedTime.value,
           airQuality: latest.voc,
@@ -209,7 +217,9 @@ export default {
             alt="Temperatur"
             class="info-icon"
           />
-          <p>Temperatur: {{ latestData?.temperature?.toFixed(1) || 'N/A' }}°C</p>
+          <p>
+            Temperatur: {{ latestData?.temperature?.toFixed(1) || "N/A" }}°C
+          </p>
         </div>
       </div>
 
@@ -220,14 +230,14 @@ export default {
             alt="Luftfeuchtigkeit"
             class="info-icon"
           />
-          <p>Luftfeuchtigkeit: {{ latestData.humidity }}%</p>
+          <p>Luftfeuchtigkeit: {{ latestData.humidity?.toFixed(1) }}%</p>
         </div>
       </div>
 
       <div class="info-box">
         <div>
           <img :src="getIcon('luftdruck')" alt="Luftdruck" class="info-icon" />
-          <p>Luftdruck: {{ latestData.pressure }} hPa</p>
+          <p>Luftdruck: {{ latestData.pressure?.toFixed(1) }} hPa</p>
         </div>
       </div>
 
@@ -238,7 +248,7 @@ export default {
             alt="Luftqualität"
             class="info-icon"
           />
-          <p>Luftqualität: {{ latestData.airQuality }}</p>
+          <p>Luftqualität: {{ latestData.airQuality?.toFixed(1) }}</p>
         </div>
       </div>
     </div>
