@@ -40,7 +40,6 @@ export default {
 
         const latest = data[data.length - 1];
         latestData.value = latest;
-
         formattedTime.value = new Date(latest.timestamp).toLocaleTimeString();
 
         temperatureData.value.push({
@@ -185,6 +184,31 @@ export default {
 </template>
 
 <style>
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+
+body.dark {
+  background-color: #1e1e1e;
+  color: white;
+}
+
+body.light {
+  background-color: #f8f9fa;
+  color: black;
+}
+
+.dashboard {
+  min-height: 100vh;
+  box-sizing: border-box;
+  margin-top: 80px;
+  padding: 20px;
+}
+
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -239,17 +263,6 @@ export default {
   width: auto;
 }
 
-.dashboard {
-  max-width: 100vw;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-.dark {
-  background-color: #1e1e1e;
-  color: #fff;
-}
-
 .dark .header {
   background-color: #333;
 }
@@ -257,16 +270,6 @@ export default {
 .dark .info-box,
 .dark .chart {
   background-color: #2c2c2c;
-}
-
-body.dark {
-  background-color: #1e1e1e;
-  color: white;
-}
-
-body.light {
-  background-color: #f8f9fa;
-  color: black;
 }
 
 .light {
@@ -317,11 +320,6 @@ body.light {
 .header p {
   font-size: 1rem;
   margin: 0;
-}
-
-.dashboard {
-  margin-top: 80px;
-  padding: 20px;
 }
 
 .info-box {
@@ -376,7 +374,18 @@ body.light {
   column-gap: 20px;
 }
 
+@media (max-width: 1024px) {
+  .charts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 @media (max-width: 768px) {
+  .charts {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
   .info-grid {
     grid-template-columns: 1fr;
   }
@@ -396,11 +405,6 @@ body.light {
     margin-bottom: 10px;
   }
 
-  .charts {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-
   .chart canvas {
     height: 200px;
   }
@@ -416,20 +420,6 @@ body.light {
   .client-dropdown select {
     font-size: 14px;
     padding: 8px;
-  }
-}
-/* 2 Charts nebeneinander bei mittelgroßen Bildschirmen */
-@media (max-width: 1024px) {
-  .charts {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* 1 Chart pro Reihe bei kleinen Bildschirmen */
-@media (max-width: 768px) {
-  .charts {
-    grid-template-columns: 1fr;
-    gap: 15px;
   }
 }
 </style>
