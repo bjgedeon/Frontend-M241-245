@@ -37,24 +37,21 @@ export default {
       return `/images/${type}-${isDarkMode.value ? "dark" : "light"}mode.png`;
     };
 
-    // Neue Refs zum Speichern aktiver Toast-IDs
     const toastIds = {
       temperature: null,
       humidity: null,
       pressure: null,
-      voc: null,
+      vocIndex: null,
     };
 
-    // Refs zum Speichern der zuletzt gewarnten Werte
     const lastWarnedValues = {
       temperature: null,
       humidity: null,
       pressure: null,
-      voc: null,
+      vocIndex: null,
     };
 
     const checkThresholds = (data) => {
-      // Temperatur
       if (data.temperature < 0 || data.temperature > 30) {
         if (data.temperature !== lastWarnedValues.temperature) {
           if (toastIds.temperature) toast.dismiss(toastIds.temperature);
@@ -70,7 +67,6 @@ export default {
         lastWarnedValues.temperature = null;
       }
 
-      // Luftfeuchtigkeit
       if (data.humidity < 30 || data.humidity > 70) {
         if (data.humidity !== lastWarnedValues.humidity) {
           if (toastIds.humidity) toast.dismiss(toastIds.humidity);
@@ -86,7 +82,6 @@ export default {
         lastWarnedValues.humidity = null;
       }
 
-      // Luftdruck
       if (data.pressure < 980 || data.pressure > 1050) {
         if (data.pressure !== lastWarnedValues.pressure) {
           if (toastIds.pressure) toast.dismiss(toastIds.pressure);
@@ -102,7 +97,6 @@ export default {
         lastWarnedValues.pressure = null;
       }
 
-      // Luftqualität
       if (data.vocIndex > 200) {
         if (data.vocIndex !== lastWarnedValues.vocIndex) {
           if (toastIds.vocIndex) toast.dismiss(toastIds.vocIndex);
@@ -122,17 +116,15 @@ export default {
     const getData = async () => {
       try {
         const token = localStorage.getItem("auth_token");
-        if (!token) {
-          throw new Error("Kein Token im Speicher gefunden");
-        }
+        if (!token) throw new Error("Kein Token im Speicher gefunden");
 
         const data = await fetchData(1.54, token);
         if (!data || data.length === 0) return;
 
         const latest = data[data.length - 1];
         latestData.value = latest;
+        latestData.value.airQuality = latest.voc;
 
-        // Zeitumwandlung: UTC auf Schweizer Zeit (UTC+2)
         const localTime = new Date(latest.timestamp);
         localTime.setHours(localTime.getHours() + 2);
         formattedTime.value = localTime.toLocaleTimeString();
@@ -229,43 +221,29 @@ export default {
     <div class="info-grid">
       <div class="info-box">
         <div>
-          <img
-            :src="getIcon('temperatur')"
-            alt="Temperatur"
-            class="info-icon"
-          />
-          <p>
-            Temperatur: {{ latestData?.temperature?.toFixed(1) || "N/A" }}°C
-          </p>
+          <img :src="getIcon('temperatur')" alt="Temperatur" class="info-icon" />
+          <p>Temperatur: {{ latestData?.temperature?.toFixed(1) || "N/A" }}°C</p>
         </div>
       </div>
 
       <div class="info-box">
         <div>
-          <img
-            :src="getIcon('luftfeuchtigkeit')"
-            alt="Luftfeuchtigkeit"
-            class="info-icon"
-          />
-          <p>Luftfeuchtigkeit: {{ latestData.humidity?.toFixed(1) }}%</p>
+          <img :src="getIcon('luftfeuchtigkeit')" alt="Luftfeuchtigkeit" class="info-icon" />
+          <p>Luftfeuchtigkeit: {{ latestData.humidity?.toFixed(1) || "N/A" }}%</p>
         </div>
       </div>
 
       <div class="info-box">
         <div>
           <img :src="getIcon('luftdruck')" alt="Luftdruck" class="info-icon" />
-          <p>Luftdruck: {{ latestData.pressure?.toFixed(1) }} hPa</p>
+          <p>Luftdruck: {{ latestData.pressure?.toFixed(1) || "N/A" }} hPa</p>
         </div>
       </div>
 
       <div class="info-box">
         <div>
-          <img
-            :src="getIcon('luftqualitaet')"
-            alt="Luftqualität"
-            class="info-icon"
-          />
-          <p>Luftqualität: {{ latestData.airQuality?.toFixed(1) }}</p>
+          <img :src="getIcon('luftqualitaet')" alt="Luftqualität" class="info-icon" />
+          <p>Luftqualität: {{ latestData.airQuality?.toFixed(1) || "N/A" }}</p>
         </div>
       </div>
     </div>
