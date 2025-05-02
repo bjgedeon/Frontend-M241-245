@@ -59,7 +59,10 @@ export const fetchData = async (client, token) => {
       throw new Error(`Fehler beim Abrufen der Sensordaten: ${errorText}`);
     }
 
-    return await response.json();
+    const data = await response.json();
+    console.log("Response Data:", data); // <--- Hier wird die Response angezeigt
+
+    return data;
   } catch (error) {
     console.error('Fehler beim Abrufen der Sensordaten:', error);
     throw error;
