@@ -172,11 +172,11 @@ export default {
       setInterval(() => {
         formattedTime.value = new Date().toLocaleTimeString();
         getData();
-      }, 30000);
+      }, 35000);
 
       setInterval(() => {
         updateCharts();
-      }, 30000);
+      }, 35000);
     });
 
     watch(selectedClient, () => {
