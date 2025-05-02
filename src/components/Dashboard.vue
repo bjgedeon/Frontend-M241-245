@@ -509,6 +509,42 @@ body.dark .client-dropdown::after {
   font-family: sans-serif;
 }
 
+/* Light Mode Scrollbar */
+body.light::-webkit-scrollbar {
+  width: 8px;
+}
+
+body.light::-webkit-scrollbar-track {
+  background: #f0f0f0; /* Heller Hintergrund für die Scrollbar-Spur */
+}
+
+body.light::-webkit-scrollbar-thumb {
+  background-color: #888; /* Dunkelgraue Farbe für den Schieberegler */
+  border-radius: 4px;
+}
+
+body.light::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Dunkler bei Hover */
+}
+
+/* Dark Mode Scrollbar */
+body.dark::-webkit-scrollbar {
+  width: 8px;
+}
+
+body.dark::-webkit-scrollbar-track {
+  background: #333; /* Dunkler Hintergrund für die Scrollbar-Spur */
+}
+
+body.dark::-webkit-scrollbar-thumb {
+  background-color: #bbb; /* Helle Farbe für den Schieberegler */
+  border-radius: 4px;
+}
+
+body.dark::-webkit-scrollbar-thumb:hover {
+  background-color: #888; /* Heller bei Hover */
+}
+
 @media (max-width: 1024px) {
   .charts {
     grid-template-columns: 1fr 1fr;
