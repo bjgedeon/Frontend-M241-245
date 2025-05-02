@@ -4,14 +4,15 @@ import { fetchData } from "../api.js";
 import TemperatureChart from "./Charts/TemperatureChart.vue";
 import HumidityChart from "./Charts/HumidityChart.vue";
 import AirQualityChart from "./Charts/AirQualityChart.vue";
+import AirPressureChart from "./Charts/AirPressureChart.vue";
 
 export default {
-  components: { TemperatureChart, HumidityChart, AirQualityChart },
+  components: { TemperatureChart, HumidityChart, AirQualityChart, AirPressureChart },
 
   setup() {
     const temperatureData = ref([]);
     const humidityData = ref([]);
-    const pressureData = ref([]);
+    const airPressureData = ref([]);
     const airQualityData = ref([]);
     const latestData = ref({});
     const formattedTime = ref(new Date().toLocaleTimeString());
@@ -52,7 +53,7 @@ export default {
           humidity: latest.humidity,
         });
 
-        pressureData.value.push({
+        airPressureData.value.push({
           time: formattedTime.value,
           pressure: latest.pressure,
         });
@@ -70,6 +71,7 @@ export default {
       temperatureData.value = [...temperatureData.value];
       humidityData.value = [...humidityData.value];
       airQualityData.value = [...airQualityData.value];
+      airPressureData.value = [...airPressureData.value];
     };
 
     onMounted(() => {
@@ -91,8 +93,8 @@ export default {
       formattedTime,
       temperatureData,
       humidityData,
-      pressureData,
       airQualityData,
+      airPressureData,
       toggleTheme,
       getIcon,
       isDarkMode,
@@ -178,6 +180,9 @@ export default {
       </div>
       <div class="chart">
         <AirQualityChart :data="airQualityData" />
+      </div>
+      <div class="chart">
+        <AirPressureChart :data="airPressureData" />
       </div>
     </div>
   </div>
