@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://172.18.14.20:8080'; 
+const API_BASE_URL = 'http://bbzw-horizon.duckdns.org:8080'; 
 
 export async function generateToken(username, password) {
 
@@ -34,15 +34,13 @@ export async function generateToken(username, password) {
 
 export const fetchData = async (client, token) => {
   try {
-
     const currentDate = new Date();
     const startDate = new Date(currentDate);
     startDate.setDate(currentDate.getDate() - 1);
 
-    const url = `${API_BASE_URL}/sensors/get-data?client=${client}`;
+    const url = `${API_BASE_URL}/sensors/get-data?client=${client}&start_date=${startDate.toISOString()}&end_date=${currentDate.toISOString()}`;
 
     console.log("Request URL:", url);
-
 
     if (!token) {
       throw new Error("Token fehlt oder ist ungültig");
@@ -51,10 +49,8 @@ export const fetchData = async (client, token) => {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'token': token,
         'Content-Type': 'application/json',
-        'start_date': startDate.toISOString(),
-        'end_date': currentDate.toISOString(),
       },
     });
 
@@ -69,5 +65,6 @@ export const fetchData = async (client, token) => {
     throw error;
   }
 };
+
 
 
