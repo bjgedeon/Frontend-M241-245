@@ -50,7 +50,7 @@ export default {
       if (data.temperature < 0 || data.temperature > 35) {
         if (!toastIds.temperature) {
           toastIds.temperature = toast.warning(
-            `Temperatur außerhalb des Bereichs: ${data.temperature}°C`,
+            `Temperatur ausserhalb des Bereichs: ${data.temperature}°C`,
             { timeout: false }
           );
         }
@@ -63,7 +63,7 @@ export default {
       if (data.humidity < 20 || data.humidity > 80) {
         if (!toastIds.humidity) {
           toastIds.humidity = toast.warning(
-            `Luftfeuchtigkeit außerhalb des Bereichs: ${data.humidity}%`,
+            `Luftfeuchtigkeit ausserhalb des Bereichs: ${data.humidity}%`,
             { timeout: false }
           );
         }
@@ -76,7 +76,7 @@ export default {
       if (data.pressure < 980 || data.pressure > 1050) {
         if (!toastIds.pressure) {
           toastIds.pressure = toast.warning(
-            `Luftdruck außerhalb des Bereichs: ${data.pressure} hPa`,
+            `Luftdruck ausserhalb des Bereichs: ${data.pressure} hPa`,
             { timeout: false }
           );
         }
@@ -110,23 +110,31 @@ export default {
 
         const latest = data[data.length - 1];
         latestData.value = latest;
-        formattedTime.value = new Date(latest.timestamp).toLocaleTimeString();
 
+        // Zeitumwandlung: UTC auf Schweizer Zeit (UTC+2)
+        const localTime = new Date(latest.timestamp);
+        localTime.setHours(localTime.getHours() + 2); // +2 Stunden für die Schweizer Zeit (UTC+2)
+        formattedTime.value = localTime.toLocaleTimeString(); // Umformatieren der Zeit in eine lesbare Form
+
+        // Temperaturdaten mit der umgewandelten Zeit
         temperatureData.value.push({
           time: formattedTime.value,
           temperature: latest.temperature,
         });
 
+        // Humiditydaten
         humidityData.value.push({
           time: formattedTime.value,
           humidity: latest.humidity,
         });
 
+        // Luftdruckdaten
         airPressureData.value.push({
           time: formattedTime.value,
           pressure: latest.pressure,
         });
 
+        // Luftqualitätsdaten
         airQualityData.value.push({
           time: formattedTime.value,
           airQuality: latest.voc,
@@ -182,7 +190,7 @@ export default {
     <div class="header">
       <img src="/logo.png" alt="Dashboard Logo" class="logo" />
       <div class="header-center">
-        <h1>Luzern</h1>
+        <h1>BBZW Sursee</h1>
         <p>{{ formattedTime }}</p>
       </div>
 
@@ -209,7 +217,9 @@ export default {
             alt="Temperatur"
             class="info-icon"
           />
-          <p>Temperatur: {{ latestData.temperature }}°C</p>
+          <p>
+            Temperatur: {{ latestData?.temperature?.toFixed(1) || "N/A" }}°C
+          </p>
         </div>
       </div>
 
@@ -220,14 +230,14 @@ export default {
             alt="Luftfeuchtigkeit"
             class="info-icon"
           />
-          <p>Luftfeuchtigkeit: {{ latestData.humidity }}%</p>
+          <p>Luftfeuchtigkeit: {{ latestData.humidity?.toFixed(1) }}%</p>
         </div>
       </div>
 
       <div class="info-box">
         <div>
           <img :src="getIcon('luftdruck')" alt="Luftdruck" class="info-icon" />
-          <p>Luftdruck: {{ latestData.pressure }} hPa</p>
+          <p>Luftdruck: {{ latestData.pressure?.toFixed(1) }} hPa</p>
         </div>
       </div>
 
@@ -238,7 +248,7 @@ export default {
             alt="Luftqualität"
             class="info-icon"
           />
-          <p>Luftqualität: {{ latestData.airQuality }}</p>
+          <p>Luftqualität: {{ latestData.airQuality?.toFixed(1) }}</p>
         </div>
       </div>
     </div>
@@ -251,10 +261,10 @@ export default {
         <HumidityChart :data="humidityData" :is-dark="isDarkMode" />
       </div>
       <div class="chart">
-        <AirQualityChart :data="airQualityData" :is-dark="isDarkMode" />
+        <AirPressureChart :data="airPressureData" :is-dark="isDarkMode" />
       </div>
       <div class="chart">
-        <AirPressureChart :data="airPressureData" :is-dark="isDarkMode" />
+        <AirQualityChart :data="airQualityData" :is-dark="isDarkMode" />
       </div>
     </div>
   </div>
