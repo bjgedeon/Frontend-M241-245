@@ -1,6 +1,6 @@
 <template>
   <div class="chart-container">
-    <apexchart type="line" :options="chartOptions" :series="series" />
+    <apexchart type="radialBar" height="400" :options="chartOptions" :series="series" />
   </div>
 </template>
 
@@ -23,125 +23,59 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const series = computed(() => [
-      {
-        name: "Luftqualität",
-        data: props.data.map((item) => item.airQuality),
-      },
-    ]);
+    const latestValue = computed(() =>
+      props.data.length > 0 ? props.data[props.data.length - 1].airQuality : 0
+    );
+
+    const series = computed(() => [latestValue.value]);
 
     const chartOptions = computed(() => {
       const textColor = props.isDark ? "#ffffff" : "#333333";
-      const axisLabelColor = props.isDark ? "#cccccc" : "#444444";
+      const bgColor = props.isDark ? "#1e1e1e" : "#ffffff";
 
       return {
         chart: {
-          type: "line",
-          zoom: { enabled: false },
+          type: "radialBar",
+          height: 400,
           toolbar: { show: false },
           animations: { enabled: true },
           foreColor: textColor,
-          height: "100%",
+          background: bgColor,
         },
-        title: {
-          text: "Luftqualität",
-          align: "center",
-          style: {
-            fontSize: "16px",
-            color: textColor,
-          },
-        },
-        stroke: { curve: "smooth" },
-        xaxis: {
-          categories: props.data.map((item) => item.time),
-          tickAmount: 10,
-          title: {
-            text: "Uhrzeit",
-            style: {
-              fontSize: "12px",
-              color: textColor,
+        plotOptions: {
+          radialBar: {
+            startAngle: -135,
+            endAngle: 135,
+            hollow: {
+              size: "65%",
             },
-          },
-          labels: {
-            style: {
-              fontSize: "12px",
-              color: axisLabelColor,
+            track: {
+              background: props.isDark ? "#333" : "#eee",
+              strokeWidth: "100%",
             },
-          },
-        },
-        yaxis: {
-          title: {
-            text: "Luftqualität (Index)",
-            style: {
-              fontSize: "12px",
-              color: textColor,
-            },
-          },
-          labels: {
-            style: {
-              fontSize: "12px",
-              color: axisLabelColor,
+            dataLabels: {
+              name: {
+                show: true,
+                fontSize: "20px",
+                color: textColor,
+                offsetY: -5,
+              },
+              value: {
+                formatter: (val) => `${val.toFixed(1)} AQI`,
+                fontSize: "28px",
+                color: textColor,
+                show: true,
+                offsetY: 5,
+              },
             },
           },
         },
+        labels: ["Luftqualität"],
         colors: ["#28a745"],
         tooltip: {
+          enabled: true,
           theme: props.isDark ? "dark" : "light",
-          style: {
-            fontSize: "13px",
-          },
-          y: {
-            formatter: (val) => `${val.toFixed(2)}`,
-          },
         },
-        responsive: [
-          {
-            breakpoint: 768,
-            options: {
-              chart: { height: 250 },
-              xaxis: {
-                tickAmount: 5,
-                labels: {
-                  rotate: -45,
-                  style: { fontSize: "10px", color: axisLabelColor },
-                },
-              },
-              yaxis: {
-                title: {
-                  text: "Luftqualität (Index)",
-                  style: {
-                    fontSize: "10px",
-                    color: textColor,
-                  },
-                },
-                labels: { style: { fontSize: "10px", color: axisLabelColor } },
-              },
-            },
-          },
-          {
-            breakpoint: 480,
-            options: {
-              chart: { height: 200 },
-              xaxis: {
-                tickAmount: 3,
-                labels: {
-                  rotate: -45,
-                  style: { fontSize: "9px", color: axisLabelColor },
-                },
-              },
-              yaxis: {
-                title: {
-                  text: "Luftqualität (Index)",
-                  style: {
-                    fontSize: "9px",
-                    color: textColor,
-                  },
-                },
-                labels: { style: { fontSize: "9px", color: axisLabelColor } },
-              },
-            },
-          },
-        ],
       };
     });
 
@@ -156,7 +90,7 @@ export default defineComponent({
 <style scoped>
 .chart-container {
   width: 100%;
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
 }
 </style>
