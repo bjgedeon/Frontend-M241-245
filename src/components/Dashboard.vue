@@ -39,7 +39,6 @@ export default {
         const clients = await fetchClients(token);
         availableClients.value = clients;
 
-        // Set the first client as default if available
         if (clients.length > 0) {
           selectedClient.value = clients[0];
         }
@@ -514,8 +513,6 @@ body.light {
   cursor: pointer;
 }
 
-/* Pfeil entfernen und durch eigenen ersetzen */
-
 .client-dropdown::after {
   position: absolute;
   top: 50%;
@@ -541,40 +538,38 @@ body.dark .client-dropdown::after {
   font-family: sans-serif;
 }
 
-/* Light Mode Scrollbar */
 body.light::-webkit-scrollbar {
   width: 8px;
 }
 
 body.light::-webkit-scrollbar-track {
-  background: #f0f0f0; /* Heller Hintergrund für die Scrollbar-Spur */
+  background: #f0f0f0;
 }
 
 body.light::-webkit-scrollbar-thumb {
-  background-color: #888; /* Dunkelgraue Farbe für den Schieberegler */
+  background-color: #888;
   border-radius: 4px;
 }
 
 body.light::-webkit-scrollbar-thumb:hover {
-  background-color: #555; /* Dunkler bei Hover */
+  background-color: #555;
 }
 
-/* Dark Mode Scrollbar */
 body.dark::-webkit-scrollbar {
   width: 8px;
 }
 
 body.dark::-webkit-scrollbar-track {
-  background: #333; /* Dunkler Hintergrund für die Scrollbar-Spur */
+  background: #333;
 }
 
 body.dark::-webkit-scrollbar-thumb {
-  background-color: #bbb; /* Helle Farbe für den Schieberegler */
+  background-color: #bbb;
   border-radius: 4px;
 }
 
 body.dark::-webkit-scrollbar-thumb:hover {
-  background-color: #888; /* Heller bei Hover */
+  background-color: #888;
 }
 
 @media (max-width: 1024px) {

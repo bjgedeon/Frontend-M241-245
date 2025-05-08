@@ -2,13 +2,11 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 
-// Toastification importieren
 import Toast from "vue-toastification";
-import "vue-toastification/dist/index.css"; // Styling
+import "vue-toastification/dist/index.css";
 
 const app = createApp(App);
 
-// Toastification konfigurieren (optional)
 const toastOptions = {
   position: "top-right",
   timeout: 3000,
@@ -18,5 +16,5 @@ const toastOptions = {
 };
 
 app.use(router);
-app.use(Toast, toastOptions); // Toast verwenden
+app.use(Toast, toastOptions);
 app.mount("#app");

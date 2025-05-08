@@ -114,7 +114,6 @@ export async function fetchClients(token) {
 
     return data.map((client) => client.name);
 
-    // Ansonsten geben wir die kompletten Daten zurück
     return data;
   } catch (error) {
     console.error("Fehler beim Abrufen der Clients:", error);

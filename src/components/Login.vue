@@ -66,7 +66,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* verhindert Scrollbars */
+  overflow: hidden;
   height: 100%;
   width: 100%;
 }
@@ -90,15 +90,14 @@ body {
   font-family: 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Komponentenspezifische Styles */
 .login-container {
   width: 90%;
-  max-width: 600px;     /* Kleinere maximale Breite */
-  margin: 80px auto;    /* Reduzierter margin-Wert */
+  max-width: 600px;
+  margin: 80px auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;            /* Geringerer Abstand zwischen Elementen */
-  padding: 40px;        /* Etwas weniger Padding */
+  gap: 20px;
+  padding: 40px;
   border-radius: 12px;
   background-color: #1e1e1e;
   color: #ffffff;
@@ -121,16 +120,16 @@ h2 {
   text-align: center;
   margin-bottom: 10px;
   font-weight: 500;
-  font-size: 24px;       /* Kleinere Überschrift */
+  font-size: 24px;
 }
 
 input {
-  padding: 12px;         /* Weniger Padding */
+  padding: 12px;
   border-radius: 6px;
   border: 1px solid #444;
   background-color: #2a2a2a;
   color: white;
-  font-size: 16px;       /* Kleinere Schrift */
+  font-size: 16px;
   outline: none;
   transition: border-color 0.3s;
 }
@@ -140,11 +139,11 @@ input:focus {
 }
 
 button {
-  padding: 12px;         /* Weniger Padding */
+  padding: 12px;
   background-color: #4c7caf;
   border: none;
   color: white;
-  font-size: 16px;       /* Kleinere Schrift */
+  font-size: 16px;
   font-weight: bold;
   border-radius: 6px;
   cursor: pointer;
