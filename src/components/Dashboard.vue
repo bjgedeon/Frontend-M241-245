@@ -7,6 +7,7 @@ import HumidityChart from "./Charts/HumidityChart.vue";
 import AirQualityChart from "./Charts/AirQualityChart.vue";
 import AirPressureChart from "./Charts/AirPressureChart.vue";
 import Footer from "./Footer.vue";
+import calculateAirQualityIndex from "@/utils/calculateAirQualityIndex.js";
 
 export default {
   components: {
@@ -125,7 +126,11 @@ export default {
 
         const latest = data[data.length - 1];
         latestData.value = latest;
-        latestData.value.airQuality = latest.voc;
+        latestData.value.airQuality = calculateAirQualityIndex(
+          latest.voc,
+          latest.gas,
+          latest.humidity
+        );
 
         const localTime = new Date(latest.timestamp);
         localTime.setHours(localTime.getHours() + 2);
@@ -148,7 +153,7 @@ export default {
 
         airQualityData.value.push({
           time: formattedTime.value,
-          airQuality: latest.voc,
+          airQuality: latestData.value.airQuality,
         });
 
         checkThresholds(latest);
