@@ -215,7 +215,6 @@ export default {
       />
       <div class="header-center">
         <h1>BBZW Sursee</h1>
-        <p>{{ formattedTime }}</p>
       </div>
 
       <label class="toggle-switch">
