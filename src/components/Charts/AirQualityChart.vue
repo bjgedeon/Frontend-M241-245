@@ -42,7 +42,6 @@ export default defineComponent({
           animations: { enabled: true },
           foreColor: textColor,
           height: "100%",
-          // width entfernt für responsives Verhalten
         },
         title: {
           text: "Luftqualität",
@@ -86,6 +85,15 @@ export default defineComponent({
           },
         },
         colors: ["#28a745"],
+        tooltip: {
+          theme: props.isDark ? "dark" : "light",
+          style: {
+            fontSize: "13px",
+          },
+          y: {
+            formatter: (val) => `${val.toFixed(2)}`,
+          },
+        },
         responsive: [
           {
             breakpoint: 768,
@@ -100,7 +108,7 @@ export default defineComponent({
               },
               yaxis: {
                 title: {
-                  text: "Luftqualität (Index)", // Y-Achsentitel explizit setzen
+                  text: "Luftqualität (Index)",
                   style: {
                     fontSize: "10px",
                     color: textColor,
@@ -123,7 +131,7 @@ export default defineComponent({
               },
               yaxis: {
                 title: {
-                  text: "Luftqualität (Index)", // Auch hier setzen
+                  text: "Luftqualität (Index)",
                   style: {
                     fontSize: "9px",
                     color: textColor,

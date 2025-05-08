@@ -41,7 +41,7 @@ export default defineComponent({
           toolbar: { show: false },
           animations: { enabled: true },
           foreColor: textColor,
-          height: "100%", // kein width hier
+          height: "100%",
         },
         title: {
           text: "Luftdruck",
@@ -54,7 +54,7 @@ export default defineComponent({
         stroke: { curve: "smooth" },
         xaxis: {
           categories: props.data.map((item) => item.time),
-          tickAmount: 10, // Steuert die X-Achsen-Skalierung
+          tickAmount: 10,
           title: {
             text: "Uhrzeit",
             style: {
@@ -85,6 +85,15 @@ export default defineComponent({
           },
         },
         colors: ["#fff700"],
+        tooltip: {
+          theme: props.isDark ? "dark" : "light",
+          style: {
+            fontSize: "13px",
+          },
+          y: {
+            formatter: (val) => `${val.toFixed(2)}`,
+          },
+        },
         responsive: [
           {
             breakpoint: 768,
@@ -99,7 +108,7 @@ export default defineComponent({
               },
               yaxis: {
                 title: {
-                  text: "Luftdruck (hPa)", // Y-Achsentitel explizit setzen
+                  text: "Luftdruck (hPa)",
                   style: {
                     fontSize: "10px",
                     color: textColor,
@@ -122,7 +131,7 @@ export default defineComponent({
               },
               yaxis: {
                 title: {
-                  text: "Luftdruck (hPa)", // Auch hier setzen
+                  text: "Luftdruck (hPa)",
                   style: {
                     fontSize: "9px",
                     color: textColor,

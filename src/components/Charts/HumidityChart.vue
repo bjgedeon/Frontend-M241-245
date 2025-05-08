@@ -42,7 +42,6 @@ export default defineComponent({
           animations: { enabled: true },
           foreColor: textColor,
           height: "100%",
-          // width entfernt für responsives Verhalten
         },
         title: {
           text: "Luftfeuchtigkeit",
@@ -55,7 +54,7 @@ export default defineComponent({
         stroke: { curve: "smooth" },
         xaxis: {
           categories: props.data.map((item) => item.time),
-          tickAmount: 10, // Dynamische Skalierung auf 10
+          tickAmount: 10,
           title: {
             text: "Uhrzeit",
             style: {
@@ -86,6 +85,15 @@ export default defineComponent({
           },
         },
         colors: ["#007bff"],
+        tooltip: {
+          theme: props.isDark ? "dark" : "light",
+          style: {
+            fontSize: "13px",
+          },
+          y: {
+            formatter: (val) => `${val.toFixed(2)}%`,
+          },
+        },
         responsive: [
           {
             breakpoint: 768,
@@ -100,7 +108,7 @@ export default defineComponent({
               },
               yaxis: {
                 title: {
-                  text: "Luftfeuchtigkeit (%)", // Y-Achsentitel explizit setzen
+                  text: "Luftfeuchtigkeit (%)",
                   style: {
                     fontSize: "10px",
                     color: textColor,
@@ -123,7 +131,7 @@ export default defineComponent({
               },
               yaxis: {
                 title: {
-                  text: "Luftfeuchtigkeit (%)", // Auch hier setzen
+                  text: "Luftfeuchtigkeit (%)",
                   style: {
                     fontSize: "9px",
                     color: textColor,

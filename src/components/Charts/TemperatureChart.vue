@@ -42,7 +42,6 @@ export default defineComponent({
           animations: { enabled: true },
           foreColor: textColor,
           height: "100%",
-          // width entfernt
         },
         title: {
           text: "Temperatur",
@@ -55,7 +54,7 @@ export default defineComponent({
         stroke: { curve: "smooth" },
         xaxis: {
           categories: props.data.map((item) => item.time),
-          tickAmount: 10, // X-Achsen-Skalierung anpassen
+          tickAmount: 10,
           title: {
             text: "Uhrzeit",
             style: {
@@ -86,6 +85,15 @@ export default defineComponent({
           },
         },
         colors: ["#ff5722"],
+        tooltip: {
+          theme: props.isDark ? "dark" : "light",
+          style: {
+            fontSize: "13px",
+          },
+          y: {
+            formatter: (val) => `${val.toFixed(1)} °C`,
+          },
+        },
         responsive: [
           {
             breakpoint: 768,
