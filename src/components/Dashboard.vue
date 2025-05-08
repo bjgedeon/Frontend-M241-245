@@ -1,7 +1,7 @@
 <script>
 import { ref, onMounted, watch } from "vue";
 import { useToast } from "vue-toastification";
-import { fetchData } from "../api.js";
+import { fetchData, fetchClients } from "../api.js";
 import TemperatureChart from "./Charts/TemperatureChart.vue";
 import HumidityChart from "./Charts/HumidityChart.vue";
 import AirQualityChart from "./Charts/AirQualityChart.vue";
@@ -28,7 +28,26 @@ export default {
     const latestData = ref({});
     const formattedTime = ref(new Date().toLocaleTimeString());
     const isDarkMode = ref(true);
-    const selectedClient = ref(1.54);
+    const selectedClient = ref(null);
+    const availableClients = ref([]);
+
+    const loadClients = async () => {
+      try {
+        const token = localStorage.getItem("auth_token");
+        if (!token) throw new Error("Kein Token im Speicher gefunden");
+
+        const clients = await fetchClients(token);
+        availableClients.value = clients;
+
+        // Set the first client as default if available
+        if (clients.length > 0) {
+          selectedClient.value = clients[0];
+        }
+      } catch (error) {
+        console.error("Fehler beim Laden der Clients:", error);
+        toast.error("Fehler beim Laden der Clients");
+      }
+    };
 
     const toggleTheme = () => {
       const newTheme = isDarkMode.value ? "dark" : "light";
@@ -170,9 +189,12 @@ export default {
       airPressureData.value = [...airPressureData.value];
     };
 
-    onMounted(() => {
+    onMounted(async () => {
       document.body.classList.add("dark");
-      getData();
+      await loadClients(); // Load clients first
+      if (selectedClient.value) {
+        getData();
+      }
 
       setInterval(() => {
         formattedTime.value = new Date().toLocaleTimeString();
@@ -198,6 +220,7 @@ export default {
       toggleTheme,
       isDarkMode,
       selectedClient,
+      availableClients,
       getIcon,
     };
   },
@@ -227,8 +250,13 @@ export default {
 
       <label class="client-dropdown">
         <select v-model="selectedClient">
-          <option :value="1.54">1.54</option>
-          <option :value="1.61">1.61</option>
+          <option
+            v-for="client in availableClients"
+            :key="client"
+            :value="client"
+          >
+            {{ client }}
+          </option>
         </select>
       </label>
     </div>
