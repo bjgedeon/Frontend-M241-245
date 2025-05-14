@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://bbzw-horizon.duckdns.org:8080";
+const API_BASE_URL = "https://api.bbzw-horizon.duckdns.org";
 
 let lastTimestamp = false;
 
