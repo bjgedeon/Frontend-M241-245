@@ -2,6 +2,14 @@ const API_BASE_URL = "https://api.bbzw-horizon.duckdns.org";
 
 let lastTimestamp = false;
 
+/**
+ * Erzeugt ein Token fuer einen Benutzer anhand von Benutzername und Passwort.
+ * Fuehrt einen fetch-Aufruf an die API durch, um eine neue Benutzersitzung zu erhalten.
+ *
+ * @param {string} username - Der Benutzername.
+ * @param {string} password - Das Passwort.
+ * @returns {Promise<string>} Ein Promise, das das Token zurueckgibt.
+ */
 export async function generateToken(username, password) {
   try {
     const response = await fetch(`${API_BASE_URL}/user/new-session`, {
@@ -27,10 +35,18 @@ export async function generateToken(username, password) {
 
     return data.token;
   } catch (error) {
-    console.error("Fehler beim Erstellen der Session:", error);
+    console.error("Fehler beim Erstellen der Benutzersitzung:", error);
   }
 }
 
+/**
+ * Ruft Sensordaten von der API ab.
+ * Berechnet den Zeitraum basierend auf dem aktuellen Datum und dem zuletzt ermittelten Zeitstempel.
+ *
+ * @param {string} client - Der Name des Klienten.
+ * @param {string} token - Das Authentifizierungstoken.
+ * @returns {Promise<Object[]>} Ein Promise, das ein Array der Sensordaten zurueckgibt.
+ */
 export const fetchData = async (client, token) => {
   try {
     const currentDate = new Date();
@@ -48,7 +64,7 @@ export const fetchData = async (client, token) => {
       startDate.setSeconds(startDate.getSeconds() - 10);
       startDate.setHours(startDate.getHours() + 2);
       console.log(
-        "Folgeabruf – Zeitraum seit letztem Timestamp (+2h Offset):",
+        "Folgeabruf – Zeitraum seit letztem Zeitstempel (+2h Offset):",
         startDate.toISOString()
       );
     }
@@ -58,7 +74,7 @@ export const fetchData = async (client, token) => {
     console.log("Request URL:", url);
 
     if (!token) {
-      throw new Error("Token fehlt oder ist ungültig");
+      throw new Error("Token fehlt oder ist ungultig");
     }
 
     const response = await fetch(url, {
@@ -81,7 +97,7 @@ export const fetchData = async (client, token) => {
     if (data.length > 0) {
       const newest = data[data.length - 1];
       lastTimestamp = new Date(newest.timestamp || newest.time || newest.date);
-      console.log("Neuer letzter Timestamp:", lastTimestamp);
+      console.log("Neuer letzter Zeitstempel:", lastTimestamp);
     }
 
     return data;
@@ -91,10 +107,16 @@ export const fetchData = async (client, token) => {
   }
 };
 
+/**
+ * Ruft eine Liste von Klienten von der API ab.
+ *
+ * @param {string} token - Das Authentifizierungstoken.
+ * @returns {Promise<string[]>} Ein Promise, das ein Array der Klientnamen zurueckgibt.
+ */
 export async function fetchClients(token) {
   try {
     if (!token) {
-      throw new Error("Token fehlt oder ist ungültig");
+      throw new Error("Token fehlt oder ist ungultig");
     }
 
     const response = await fetch(`${API_BASE_URL}/clients/get-client`, {
@@ -107,7 +129,7 @@ export async function fetchClients(token) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Fehler beim Abrufen der Clients: ${errorText}`);
+      throw new Error(`Fehler beim Abrufen der Klienten: ${errorText}`);
     }
 
     const data = await response.json();
@@ -116,7 +138,7 @@ export async function fetchClients(token) {
 
     return data;
   } catch (error) {
-    console.error("Fehler beim Abrufen der Clients:", error);
+    console.error("Fehler beim Abrufen der Klienten:", error);
     throw error;
   }
 }

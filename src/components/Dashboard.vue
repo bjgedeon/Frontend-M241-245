@@ -1,4 +1,20 @@
 <script>
+/**
+ * Dashboard-Komponente
+ *
+ * Diese Komponente stellt das Haupt-Interface zur Visualisierung
+ * von Sensordaten bereit. Es werden Werte wie Temperatur,
+ * Luftfeuchtigkeit, Luftdruck und Luftqualitaet angezeigt.
+ *
+ * Funktionen der Komponente:
+ * - Laedt verfuegbare Clients und waehlt einen Standard-Client.
+ * - Ruft periodisch Sensordaten via API ab.
+ * - Aktualisiert Diagramme basierend auf den neuesten Daten.
+ * - Prueft Messwerte gegen voreingestellte Schwellwerte und
+ *   zeigt entsprechende Warnungen an.
+ * - Unterstuetzt den Dunkel- und Hellmodus.
+ */
+
 import { ref, onMounted, watch } from "vue";
 import { useToast } from "vue-toastification";
 import { fetchData, fetchClients } from "../api.js";
@@ -19,8 +35,10 @@ export default {
   },
 
   setup() {
+    // Initialisiere Toast-Benachrichtigungen
     const toast = useToast();
 
+    // Reaktive Variablen fuer Sensordaten und Zustande
     const temperatureData = ref([]);
     const humidityData = ref([]);
     const airPressureData = ref([]);
@@ -31,6 +49,10 @@ export default {
     const selectedClient = ref(null);
     const availableClients = ref([]);
 
+    /**
+     * Laedt alle verfuegbaren Clients.
+     * Wird beim initialen Laden der Komponente ausgefuehrt.
+     */
     const loadClients = async () => {
       try {
         const token = localStorage.getItem("auth_token");
@@ -39,6 +61,7 @@ export default {
         const clients = await fetchClients(token);
         availableClients.value = clients;
 
+        // Setze den ersten Client als Standard, sofern vorhanden
         if (clients.length > 0) {
           selectedClient.value = clients[0];
         }
@@ -48,16 +71,28 @@ export default {
       }
     };
 
+    /**
+     * Wechsle den Anzeigemodus zwischen Dunkel und Hell,
+     * indem die entsprechenden Klassen im Body-Element aktualisiert werden.
+     */
     const toggleTheme = () => {
       const newTheme = isDarkMode.value ? "dark" : "light";
       document.body.classList.remove("dark", "light");
       document.body.classList.add(newTheme);
     };
 
+    /**
+     * Liefert den Pfad zu einem Icon basierend auf dem Typ und
+     * dem aktuellen Anzeigemodus.
+     *
+     * @param {string} type - Icon-Typ (z.B. "temperatur" oder "luftqualitaet").
+     * @returns {string} Pfad zur Icon-Datei.
+     */
     const getIcon = (type) => {
       return `/images/${type}-${isDarkMode.value ? "dark" : "light"}mode.png`;
     };
 
+    // Objekte zur Verwaltung von Toast-Warnungen, um Duplikate zu vermeiden
     const toastIds = {
       temperature: null,
       humidity: null,
@@ -65,6 +100,7 @@ export default {
       vocIndex: null,
     };
 
+    // Speichert zuletzt gewarnte Werte, um wiederholte Warnungen zu verhindern
     const lastWarnedValues = {
       temperature: null,
       humidity: null,
@@ -72,6 +108,13 @@ export default {
       vocIndex: null,
     };
 
+    /**
+     * Prueft die Sensordaten gegen definierte Schwellwerte.
+     * Zeigt Warnungen per Toast an, falls Werte ausserhalb des
+     * erlaubten Bereichs liegen.
+     *
+     * @param {Object} data - Aktuelle Sensordaten.
+     */
     const checkThresholds = (data) => {
       if (data.temperature < 0 || data.temperature > 30) {
         if (data.temperature !== lastWarnedValues.temperature) {
@@ -134,6 +177,13 @@ export default {
       }
     };
 
+    /**
+     * Ruft Sensordaten von der API ab und aktualisiert
+     * die reaktiven Datenvariablen.
+     *
+     * Hier wird auch der Luftqualitaetsindex basierend auf
+     * den Werten fuer VOC, Gas und Luftfeuchtigkeit berechnet.
+     */
     const getData = async () => {
       try {
         const token = localStorage.getItem("auth_token");
@@ -181,6 +231,10 @@ export default {
       }
     };
 
+    /**
+     * Aktualisiert alle Diagrammdaten.
+     * Dies ermoeglicht ein Re-Rendering der Diagramme.
+     */
     const updateCharts = () => {
       temperatureData.value = [...temperatureData.value];
       humidityData.value = [...humidityData.value];
@@ -188,13 +242,15 @@ export default {
       airPressureData.value = [...airPressureData.value];
     };
 
+    // Initialisiere die Komponente bei der Montage
     onMounted(async () => {
       document.body.classList.add("dark");
-      await loadClients(); // Load clients first
+      await loadClients(); // Laedt zuerst alle Clients
       if (selectedClient.value) {
         getData();
       }
 
+      // Periodischer Aufruf zum Abrufen von Daten und Aktualisieren der Diagramme
       setInterval(() => {
         formattedTime.value = new Date().toLocaleTimeString();
         getData();
@@ -205,6 +261,7 @@ export default {
       }, 35000);
     });
 
+    // Beobachte Aenderungen des ausgewaehlten Clients und rufe entsprechend neue Daten ab
     watch(selectedClient, () => {
       getData();
     });
@@ -229,6 +286,7 @@ export default {
 <template>
   <br />
   <div class="dashboard">
+    <!-- Kopfbereich mit Logo, Titel, Themenwechsel und Client-Auswahl -->
     <div class="header">
       <img
         :src="isDarkMode ? '/logo-weiss.png' : '/logo-schwarz.png'"
@@ -238,14 +296,14 @@ export default {
       <div class="header-center">
         <h1>BBZW Sursee</h1>
       </div>
-
+      <!-- Toggle fuer Dunkel-/Hellmodus -->
       <label class="toggle-switch">
         <input type="checkbox" v-model="isDarkMode" @change="toggleTheme" />
         <span class="slider">
           <span class="icon">{{ isDarkMode ? "🌙" : "☀️" }}</span>
         </span>
       </label>
-
+      <!-- Dropdown zur Client-Auswahl -->
       <label class="client-dropdown">
         <select v-model="selectedClient">
           <option
@@ -259,6 +317,7 @@ export default {
       </label>
     </div>
 
+    <!-- Anzeigen aktueller Sensordaten -->
     <div class="info-grid">
       <div class="info-box">
         <div>
@@ -272,7 +331,6 @@ export default {
           </p>
         </div>
       </div>
-
       <div class="info-box">
         <div>
           <img
@@ -285,14 +343,12 @@ export default {
           </p>
         </div>
       </div>
-
       <div class="info-box">
         <div>
           <img :src="getIcon('luftdruck')" alt="Luftdruck" class="info-icon" />
           <p>Luftdruck: {{ latestData.pressure?.toFixed(1) || "N/A" }} hPa</p>
         </div>
       </div>
-
       <div class="info-box">
         <div>
           <img
@@ -305,6 +361,7 @@ export default {
       </div>
     </div>
 
+    <!-- Diagramme zur Darstellung der Verlaufsdaten -->
     <div class="charts">
       <div class="chart">
         <TemperatureChart :data="temperatureData" :is-dark="isDarkMode" />
@@ -320,6 +377,7 @@ export default {
       </div>
     </div>
   </div>
+  <!-- Footer-Bereich -->
   <Footer :isDarkMode="isDarkMode" />
 </template>
 
